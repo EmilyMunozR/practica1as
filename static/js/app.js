@@ -57,7 +57,7 @@ app.run(["$rootScope", "$location", "$timeout", function($rootScope, $location, 
 
     $rootScope.$on("$routeChangeSuccess", function (event, current, previous) {
         $("html").css("overflow-x", "hidden")
-
+        
         const path = current.$$route.originalPath
 
         if (path.indexOf("splash") == -1) {
@@ -83,6 +83,39 @@ app.run(["$rootScope", "$location", "$timeout", function($rootScope, $location, 
 app.controller("appCtrl", function ($scope, $http) {
 })
 app.controller("productosCtrl", function ($scope, $http) {
+    function buscarProductos() {
+        $.get("/tbodyProductos", function (trsHTML) {
+            $("#tbodyProductos").html(trsHTML)
+        })
+    }
+
+    buscarProductos()
+    
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = true
+
+    var pusher = new Pusher("e57a8ad0a9dc2e83d9a2", {
+      cluster: "us2"
+    })
+
+    var channel = pusher.subscribe("canalProductos")
+    channel.bind("eventoProductos", function(data) {
+        alert(JSON.stringify(data))
+    })
+
+    $(document).on("submit", "#frmProducto", function (event) {
+        event.preventDefault()
+
+        $.post("/producto", {
+            id: "",
+            nombre: $("#txtNombre").val(),
+            precio: $("#txtPrecio").val(),
+            existencias: $("#txtExistencias").val(),
+        }, function (respuesta) {
+            buscarProductos()
+        })
+    })
+
     $(document).on("click", ".btn-ingredientes", function (event) {
         const id = $(this).data("id")
 
@@ -121,4 +154,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
+
+
+
+
 
