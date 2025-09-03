@@ -47,6 +47,11 @@ def app2():
 
 @app.route("/productos")
 def productos():
+    return render_template("productos.html")
+
+
+@app.route("/tbodyProductos")
+def tbodyProductos():
     if not con.is_connected():
         con.reconnect()
 
@@ -77,7 +82,7 @@ def productos():
         registro["Hora"]       = fecha_hora.strftime("%H:%M:%S")
     """
 
-    return render_template("productos.html", productos=registros)
+    return render_template("tbodyProductos.html", productos=registros)
 
 @app.route("/productos/ingredientes/<int:id>")
 def productos2(id):
@@ -228,3 +233,5 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
+
