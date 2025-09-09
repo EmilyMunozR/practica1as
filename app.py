@@ -19,9 +19,9 @@ from flask_cors import CORS, cross_origin
 
 con = mysql.connector.connect(
     host="185.232.14.52",
-    database="u760464709_16005339_bd",
-    user="u760464709_16005339_usr",
-    password="/iJRzrJBz+P1"
+    database="u760464709_23005014_bd",
+    user="u760464709_23005014_usr",
+    password="B|7k3UPs3&P"
 )
 
 app = Flask(__name__)
@@ -32,10 +32,10 @@ def pusherProductos():
     import pusher
     
     pusher_client = pusher.Pusher(
-      app_id='2046028',
-      key='a572e18b081c7b9a92cc',
-      secret='e9f00f92316899c334f1',
-      cluster="us2",
+      app_id = "2046028"
+      key = "a572e18b081c7b9a92cc"
+      secret = "e9f00f92316899c334f1"
+      cluster = "us2"
       ssl=True
     )
     
@@ -55,7 +55,6 @@ def index():
 def app2():
     if not con.is_connected():
         con.reconnect()
-
     con.close()
 
     return render_template("login.html")
@@ -73,19 +72,23 @@ def iniciarSesion():
 
     cursor = con.cursor(dictionary=True)
     sql    = """
-    SELECT Id_Usuario
+    SELECT IdUsuario
     FROM usuarios
 
-    WHERE Nombre_Usuario = %s
+    WHERE Nombre = %s
     AND Contrasena = %s
     """
-    val    = (usuario, contrasena)
+    val    = (Usuario, Contrasena)
 
     cursor.execute(sql, val)
     registros = cursor.fetchall()
     con.close()
 
     return make_response(jsonify(registros))
+
+
+
+
 @app.route("/productos")
 def productos():
     return render_template("productos.html")
@@ -276,6 +279,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
