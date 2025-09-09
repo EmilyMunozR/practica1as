@@ -17,29 +17,25 @@ app.config(function ($routeProvider, $locationProvider) {
         templateUrl: "/app",
         controller: "appCtrl"
     })
-    .when("/productos", {
-        templateUrl: "/productos",
-        controller: "productosCtrl"
+    .when("/integrantes", {
+        templateUrl: "/integrantes",
+        controller: "integrantesCtrl"
     })
-    .when("/decoraciones", {
-        templateUrl: "/decoraciones",
-        controller: "decoracionesCtrl"
+    .when("/equiposintegrantes", {
+        templateUrl: "/equiposintegrantes",
+        controller: "equiposintegrantesCtrl"
     })
-    .when("/alumnos", {
-        templateUrl: "/alumnos",
-        controller: "alumnosCtrl"
+    .when("/equipos", {
+        templateUrl: "/equipos",
+        controller: "equiposCtrl"
     })
-    .when("/ventas", {
-        templateUrl: "/ventas",
-        controller: "ventasCtrl"
+    .when("/proyectos", {
+        templateUrl: "/proyectos",
+        controller: "proyectosCtrl"
     })
-    .when("/reportes", {
-        templateUrl: "/reportes",
-        controller: "reportesCtrl"
-    })
-    .when("/notificaciones", {
-        templateUrl: "/notificaciones",
-        controller: "notificacionesCtrl"
+    .when("/proyectosavances", {
+        templateUrl: "/proyectosavances",
+        controller: "proyectosavancesCtrl"
     })
     .otherwise({
         redirectTo: "/"
@@ -89,16 +85,14 @@ app.controller("appCtrl", function ($scope, $http) {
         event.preventDefault()
         $.post("iniciarSesion", $(this).serialize(), function (respuesta) {
             if (respuesta.length) {
-                alert("Iniciaste Sesión")
-                window.location = "/#/productos"
-
+                window.location = "/#/proyectosavances"
                 return
             }
-
             alert("Usuario y/o Contraseña Incorrecto(s)")
         })
     })
 })
+
 app.controller("productosCtrl", function ($scope, $http) {
     function buscarProductos() {
         $.get("/tbodyProductos", function (trsHTML) {
@@ -135,8 +129,8 @@ app.controller("productosCtrl", function ($scope, $http) {
     $(document).on("click", ".btn-ingredientes", function (event) {
         const id = $(this).data("id")
 
-        $.get(`/productos/ingredientes/${id}`, function (html) {
-            modal(html, "Ingredientes", [
+        $.get(`/proyectosavances/proyectos/${id}`, function (html) {
+            modal(html, "Proyectos", [
                 {html: "Aceptar", class: "btn btn-secondary", fun: function (event) {
                     closeModal()
                 }}
@@ -206,6 +200,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
