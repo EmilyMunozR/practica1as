@@ -108,9 +108,10 @@ def tbodyProductos():
     LIMIT 10 OFFSET 0
     """
 
-    return render_template("tbodyIntegrantes.html")
     cursor.execute(sql)
     registros = cursor.fetchall()
+
+    return render_template("tbodyIntegrantes.html")
 
     # Si manejas fechas y horas
     #"""
@@ -277,6 +278,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
