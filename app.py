@@ -111,18 +111,7 @@ def tbodyProductos():
     cursor.execute(sql)
     registros = cursor.fetchall()
 
-    return render_template("tbodyIntegrantes.html")
-
-    # Si manejas fechas y horas
-    #"""
-    #for registro in registros:
-    #    fecha_hora = registro["Fecha_Hora"]
-    #
-    #    registro["Fecha_Hora"] = fecha_hora.strftime("%Y-%m-%d %H:%M:%S")
-    #    registro["Fecha"]      = fecha_hora.strftime("%d/%m/%Y")
-    #    registro["Hora"]       = fecha_hora.strftime("%H:%M:%S")
-    #"""
-    
+    return render_template("tbodyIntegrantes.html", integrantes=registros)
 
 
 
@@ -278,6 +267,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
