@@ -29,8 +29,8 @@ CORS(app)
 
 
 def pusherIntegrantes():
-    try:
-        print("Disparando evento Pusher...")
+    import pusher
+    
         pusher_client = pusher.Pusher(
             app_id='2048639',
             key='85576a197a0fb5c211de',
@@ -39,9 +39,7 @@ def pusherIntegrantes():
             ssl=True
         )
         pusher_client.trigger('integranteschannel', 'integrantesevent', {'message': 'hello world'})
-    except Exception as e:
-        print("Error en Pusher:", e)
-
+        return make_response(jsonify({}))
 
 @app.route("/")
 def index():
@@ -352,6 +350,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
