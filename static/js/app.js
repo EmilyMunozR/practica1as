@@ -84,6 +84,8 @@ app.run(["$rootScope", "$location", "$timeout", function($rootScope, $location, 
     })
 }])
 
+
+///////////////// App Controller
 app.controller("appCtrl", function ($scope, $http) {
     $("#frmInicioSesion").submit(function (event) {
         event.preventDefault()
@@ -100,6 +102,7 @@ app.controller("appCtrl", function ($scope, $http) {
 })
 
 
+///////////////// integrantes controller
 app.controller("integrantesCtrl", function ($scope, $http) {
     function buscarIntegrantes() {
         $.get("/tbodyIntegrantes", function (trsHTML) {
@@ -132,11 +135,45 @@ app.controller("integrantesCtrl", function ($scope, $http) {
 })
 
 
+///////////////// proyectos controller
+
+app.controller("proyectosCtrl", function ($scope, $http) {
+    function buscarIntegrantes() {
+        $.get("/tbodyProyectos", function (trsHTML) {
+            $("#tbodyProyectos").html(trsHTML)
+        })
+    }
+
+    buscarProyectos()
+    
+    Pusher.logToConsole = true
+
+    var pusher = new Pusher('85576a197a0fb5c211de', {
+      cluster: 'us2'
+    });
+
+    var channel = pusher.subscribe("proyectoschannel")
+    channel.bind("proyectosevent", function(data) {
+       buscarProyectos()
+    })
 
 
+    $(document).on("submit", "#frmProyectos", function (event) {
+        event.preventDefault()
+
+        $.post("/proyecto", {
+            idProyecto: "",
+            NombreProyecto: $("#txtNombreProyecto").val(),
+            Equipo: $("#txtEquipo").val(),
+            Objetivo: $("#txtObjetivo").val(),
+            Estado: $("#txtEstado").val(),
+            
+        })
+    })
+})
 
 
-
+////////////////////////////////////////////////////////////
 
 app.controller("productosCtrl", function ($scope, $http) {
     function buscarProductos() {
@@ -218,15 +255,6 @@ app.controller("decoracionesCtrl", function ($scope, $http) {
 })
 
 
-app.controller("alumnosCtrl", function ($scope, $http) {
-})
-app.controller("ventasCtrl", function ($scope, $http) {
-})
-app.controller("reportesCtrl", function ($scope, $http) {
-})
-app.controller("notificacionesCtrl", function ($scope, $http) {
-})
-
 const DateTime = luxon.DateTime
 let lxFechaHora
 
@@ -244,11 +272,3 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
-
-
-
-
-
-
-
-
