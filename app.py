@@ -90,7 +90,6 @@ def iniciarSesion():
 def productos():
     return render_template("integrantes.html")
 
-
 @app.route("/tbodyIntegrantes")
 def tbodyProductos():
     if not con.is_connected():
@@ -104,7 +103,6 @@ def tbodyProductos():
     FROM integrantes
 
     ORDER BY idIntegrante DESC
-
     LIMIT 10 OFFSET 0
     """
 
@@ -132,7 +130,6 @@ def buscarIntegrantes():
     WHERE nombreIntegrante LIKE %s
 
     ORDER BY idIntegrante DESC
-
     LIMIT 10 OFFSET 0
     """
     val = (busqueda,)
@@ -183,14 +180,73 @@ def guardarIntegrante():
     return make_response(jsonify({"mensaje": "Integrante guardado"}))
 
 
-@app.route("/test-event")
-def test_event():
-    pusherIntegrantes()
-    return "Evento disparado"
 
 
-  
+@app.route("/integrante/<int:id>")
+def editarIntegrante(id):
+    if not con.is_connected():
+        con.reconnect()
+
+    cursor = con.cursor(dictionary=True)
+    sql = """
     
+    SELECT idIntegrante, nombreIntegrante
+    
+    FROM integrantes
+    
+    WHERE idIntegrante = %s
+    """
+    val = (id,)
+
+    cursor.execute(sql, val)
+    registros = cursor.fetchall()
+    con.close()
+
+    return make_response(jsonify(registros))
+
+
+@app.route("/integrante/eliminar", methods=["POST"])
+def eliminarIntegrante():
+    if not con.is_connected():
+        con.reconnect()
+
+    id = request.form["id"]
+
+    cursor = con.cursor(dictionary=True)
+    sql = """
+    
+    DELETE 
+    
+    FROM integrantes
+    
+    WHERE idIntegrante = %s
+    """
+    val = (id,)
+
+    cursor.execute(sql, val)
+    con.commit()
+    con.close()
+
+    return make_response(jsonify({"mensaje": "Integrante eliminado"}))
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -349,6 +405,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
