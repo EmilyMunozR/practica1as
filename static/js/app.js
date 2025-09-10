@@ -104,8 +104,10 @@ app.controller("appCtrl", function ($scope, $http) {
 app.controller("integrantesCtrl", function ($scope, $http) {
     function buscarIntegrantes() {
         $.get("/tbodyIntegrantes", function (trsHTML) {
+            console.log("HTML recibido:", trsHTML)
             $("#tbodyIntegrantes").html(trsHTML)
         })
+
     }
 
     buscarIntegrantes()
@@ -246,6 +248,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
