@@ -65,8 +65,8 @@ def iniciarSesion():
     if not con.is_connected():
         con.reconnect()
 
-    usuario    = request.form["txtUsuario"]
-    contrasena = request.form["txtContrasena"]
+    Usuario    = request.form["txtUsuario"]
+    Contrasena = request.form["txtContrasena"]
 
     cursor = con.cursor(dictionary=True)
     sql    = """
@@ -76,7 +76,7 @@ def iniciarSesion():
     WHERE Nombre = %s 
     AND Contrasena = %s
     """
-    val = (usuario, contrasena)
+    val = (Usuario, Contrasena)
 
     cursor.execute(sql, val)
     registros = cursor.fetchall()
@@ -279,6 +279,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
