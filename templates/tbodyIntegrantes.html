@@ -1,6 +1,12 @@
-{% for integrante in integrantes %}
-<tr>
-    <td>{{ integrante.idIntegrante }}</td>
-    <td>{{ integrante.nombreIntegrante }}</td>
-</tr>
-{% endfor %}
+{% if integrantes %}
+  {% for integrante in integrantes %}
+    <tr>
+      <td>{{ integrante.idIntegrante }}</td>
+      <td>{{ integrante.nombreIntegrante }}</td>
+    </tr>
+  {% endfor %}
+{% else %}
+  <tr>
+    <td colspan="2">No hay registros</td>
+  </tr>
+{% endif %}
