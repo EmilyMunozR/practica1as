@@ -29,17 +29,15 @@ CORS(app)
 
 
 def pusherIntegrantes():
-    import pusher
-    
     pusher_client = pusher.Pusher(
-      app_id = "2046028"
-      key = "58f935c75b9acdc43024"
-      secret = "b4495b9f9853c4b2cdd5"
-      cluster = "us2"
+      app_id='2048639',
+      key='85576a197a0fb5c211de',
+      secret='bbd4afc18e15b3760912',
+      cluster='us2',
       ssl=True
     )
-    
-    pusher_client.trigger("canalIntegrantes", "eventoIntegrantes", {"message": "Hola Mundo!"})
+
+    pusher_client.trigger('my-channel', 'my-event', {'message': 'hello world'})
     return make_response(jsonify({}))
 
 @app.route("/")
@@ -279,6 +277,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
