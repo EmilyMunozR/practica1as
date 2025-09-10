@@ -37,7 +37,7 @@ def pusherIntegrantes():
       ssl=True
     )
 
-    pusher_client.trigger('my-channel', 'my-event', {'message': 'hello world'})
+    pusher_client.trigger('integranteschannel', 'integrantesevent', {'message': 'hello world'})
     return make_response(jsonify({}))
 
 @app.route("/")
@@ -277,6 +277,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
