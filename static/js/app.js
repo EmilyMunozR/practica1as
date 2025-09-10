@@ -124,7 +124,7 @@ app.controller("integrantesCtrl", function ($scope, $http) {
     $(document).on("submit", "#frmIntegrante", function (event) {
         event.preventDefault()
 
-        $.post("/integrante", {
+        $.post("/integrantes", {
             id: "",
             nombreIntegrante: $("#txtNombreIntegrante").val(),
         })
@@ -245,6 +245,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
