@@ -38,7 +38,6 @@ def pusherIntegrantes():
     )
 
     pusher_client.trigger('integranteschannel', 'integrantesevent', {'message': 'hello world'})
-    return make_response(jsonify({}))
 
 @app.route("/")
 def index():
@@ -306,6 +305,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
