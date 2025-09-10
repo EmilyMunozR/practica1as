@@ -119,14 +119,13 @@ app.controller("productosCtrl", function ($scope, $http) {
     // Enable pusher logging - don't include this in production
     Pusher.logToConsole = true
 
-    var pusher = new Pusher("a572e18b081c7b9a92cc", {
-      cluster: "us2"
-    })
+    var pusher = new Pusher('85576a197a0fb5c211de', {
+      cluster: 'us2'
+    });
 
-    var channel = pusher.subscribe("canalProductos")
-    channel.bind("eventoProductos", function(data) {
+    var channel = pusher.subscribe('my-channel');
+    channel.bind('my-event', function(data) {
         // alert(JSON.stringify(data))
-        buscarProductos()
     })
 
     $(document).on("submit", "#frmProducto", function (event) {
@@ -214,6 +213,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
