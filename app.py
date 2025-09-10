@@ -98,12 +98,12 @@ def tbodyProductos():
 
     cursor = con.cursor(dictionary=True)
     sql    = """
-    SELECT idintegrante,
-           nombreintegrante
+    SELECT idIntegrante,
+           nombreIntegrante
 
     FROM integrantes
 
-    ORDER BY idintegrante DESC
+    ORDER BY idIntegrante DESC
 
     LIMIT 10 OFFSET 0
     """
@@ -277,6 +277,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
