@@ -109,28 +109,28 @@ app.controller("integrantesCtrl", function ($scope, $http) {
     }
 
     buscarIntegrantes()
-
+    
+    // Enable pusher logging - don't include this in production
     Pusher.logToConsole = true
 
     var pusher = new Pusher('85576a197a0fb5c211de', {
       cluster: 'us2'
     });
 
-    var channel = pusher.subscribe('integranteschannel');
-    channel.bind('integrantesevent', function(data) {
+    var channel = pusher.subscribe("integranteschannel")
+    channel.bind("eintegrantesevents", function(data) {
         // alert(JSON.stringify(data))
         buscarIntegrantes()
     })
 
-    $(document).on("submit", "#frmIntegrante", function (event) {
+    $(document).on("submit", "#frmIntegrantes", function (event) {
         event.preventDefault()
 
-        $.post("/#/integrante", {
-            id: "",
-            nombreIntegrante: $("#txtNombreIntegrante").val(),
+        $.post("/integrante", {
+            idIntegrante: "",
+            nombreInteegrante: $("#txtNombreIntegrante").val(),
         })
     })
-    
 })
 
 
@@ -246,6 +246,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
