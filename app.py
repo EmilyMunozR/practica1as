@@ -114,6 +114,46 @@ def tbodyProductos():
     return render_template("tbodyIntegrantes.html", integrantes=registros)
 
 
+@app.route("/integrante", methods=["POST"])
+def guardarIntegrante():
+    if not con.is_connected():
+        con.reconnect()
+
+    idIntegrante     = request.form["idIntegrante"]
+    nombreIntegrante = request.form["nombreIntegrante"].strip()
+
+    cursor = con.cursor()
+
+    if idIntegrante:
+        sql = """
+        UPDATE integrantes
+        SET nombreIntegrante = %s
+        WHERE idIntegrante = %s
+        """
+        val = (nombreIntegrante, idIntegrante)
+    else:
+        sql = """
+        INSERT INTO integrantes (nombreIntegrante)
+        VALUES (%s)
+        """
+        val = (nombreIntegrante,)
+
+    cursor.execute(sql, val)
+    con.commit()
+    con.close()
+
+    pusherIntegrantes()
+
+    return make_response(jsonify({"mensaje": "Integrante guardado"}))
+
+
+
+
+  
+    
+
+
+
 
 @app.route("/proyectosavances/proyectos/<int:id>")
 def productos2(id):
@@ -266,6 +306,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
