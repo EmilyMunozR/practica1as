@@ -122,7 +122,7 @@ app.controller("integrantesCtrl", function ($scope, $http) {
         buscarIntegrantes()
     })
 
-    $(document).on("submit", "#frmIntegrantes", function (event) {
+    $(document).on("submit", "#frmIntegrante", function (event) {
         event.preventDefault()
 
         $.post("/integrante", {
@@ -245,6 +245,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
