@@ -60,9 +60,7 @@ def app2():
     return render_template("login.html")
     # return "<h5>Hola, soy la view app</h5>"
 
-#@app.route("/iniciarSesion", methods=["POST"])
-# Usar cuando solo se quiera usar CORS en rutas específicas
-# @cross_origin()
+@app.route("/iniciarSesion", methods=["POST"])
 def iniciarSesion():
     if not con.is_connected():
         con.reconnect()
@@ -282,6 +280,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
