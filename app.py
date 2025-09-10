@@ -119,8 +119,8 @@ def guardarIntegrante():
     if not con.is_connected():
         con.reconnect()
 
-    idIntegrante     = request.form["idIntegrante"]
-    nombreIntegrante = request.form["nombreIntegrante"].strip()
+    idIntegrante     = request.form["txtidIntegrante"]
+    nombreIntegrante = request.form["txtnombreIntegrante"]
 
     cursor = con.cursor()
 
@@ -306,6 +306,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
