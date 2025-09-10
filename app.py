@@ -11,7 +11,7 @@ from flask import request
 from flask import jsonify, make_response
 
 import mysql.connector
-
+import pusher
 import datetime
 import pytz
 
@@ -29,8 +29,8 @@ CORS(app)
 
 
 def pusherIntegrantes():
-    import pusher
-    
+    try:
+        print("Disparando evento Pusher...")
         pusher_client = pusher.Pusher(
             app_id='2048639',
             key='85576a197a0fb5c211de',
@@ -39,6 +39,9 @@ def pusherIntegrantes():
             ssl=True
         )
         pusher_client.trigger('integranteschannel', 'integrantesevent', {'message': 'hello world'})
+    except Exception as e:
+        print("Error en Pusher:", e)
+
         return make_response(jsonify({}))
 
 @app.route("/")
@@ -350,6 +353,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
