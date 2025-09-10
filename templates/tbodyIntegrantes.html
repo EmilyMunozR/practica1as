@@ -1,12 +1,11 @@
-{% if integrantes %}
-  {% for integrante in integrantes %}
-    <tr>
-      <td>{{ integrante.idIntegrante }}</td>
-      <td>{{ integrante.nombreIntegrante }}</td>
-    </tr>
-  {% endfor %}
-{% else %}
+{% for integrante in integrantes %}
   <tr>
-    <td colspan="2">No hay registros</td>
+    <td>{{ integrante.idIntegrante }}</td>
+    <td>{{ integrante.nombreIntegrante }}</td>
+    <td>
+      <button class="btn btn-danger btn-end btnEliminarIntegrante">
+        Eliminar
+      </button>
+    </td>
   </tr>
-{% endif %}
+{% endfor %}
