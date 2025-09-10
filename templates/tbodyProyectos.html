@@ -1,0 +1,15 @@
+{% if proyectos %}
+  {% for proyecto in proyectoss %}
+    <tr>
+      <td>{{ proyecto.idProyecto }}</td>
+      <td>{{ proyecto.idEquipo }}</td>
+      <td>{{ proyecto.tituloProyecto }}</td>
+      <td>{{ proyecto.objetivo }}</td>
+      <td>{{ proyecto.estado }}</td>
+    </tr>
+  {% endfor %}
+{% else %}
+  <tr>
+    <td colspan="2">No hay registros</td>
+  </tr>
+{% endif %}
