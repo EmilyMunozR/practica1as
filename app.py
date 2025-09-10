@@ -186,6 +186,10 @@ def guardarIntegrante():
     return make_response(jsonify({"mensaje": "Integrante guardado"}))
 
 
+@app.route("/test-event")
+def test_event():
+    pusherIntegrantes()
+    return "Evento disparado"
 
 
   
@@ -348,6 +352,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
