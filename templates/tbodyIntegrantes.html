@@ -1,0 +1,7 @@
+{% for integrante in integrantes %}
+<tr>
+    <td>{{ integrante.idIntegrante }}</td>
+    <td>{{ integrante.nombreIntegrante }}</td>
+    <td><button class="btn btn-info btn-integrantes" data-id="{{ integrante.idIntegrante }}">Ver algo</button></td>
+</tr>
+{% endfor %}
