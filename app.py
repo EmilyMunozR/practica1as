@@ -110,7 +110,7 @@ def tbodyProductos():
 
     return render_template("tbodyIntegrantes.html")
     cursor.execute(sql)
-    #registros = cursor.fetchall()
+    registros = cursor.fetchall()
 
     # Si manejas fechas y horas
     #"""
@@ -277,6 +277,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
