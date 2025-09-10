@@ -117,13 +117,9 @@ app.controller("integrantesCtrl", function ($scope, $http) {
     });
 
     var channel = pusher.subscribe("integranteschannel")
-    console.log("Controlador de integrantes activo")
-
     channel.bind("integrantesevent", function(data) {
-        console.log("Evento recibido:", data)
+        // alert(JSON.stringify(data))
         buscarIntegrantes()
-    })
-
     })
 
     $(document).on("submit", "#frmIntegrante", function (event) {
@@ -249,29 +245,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
