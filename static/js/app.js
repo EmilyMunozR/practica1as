@@ -119,6 +119,7 @@ app.controller("integrantesCtrl", function ($scope, $http) {
     var channel = pusher.subscribe('integranteschannel');
     channel.bind('integrantesevent', function(data) {
         // alert(JSON.stringify(data))
+        buscarIntegrantes()
     })
 
     $(document).on("submit", "#frmIntegrante", function (event) {
@@ -245,6 +246,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
