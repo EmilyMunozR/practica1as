@@ -17,14 +17,14 @@ app.config(function ($routeProvider, $locationProvider) {
         templateUrl: "/app",
         controller: "appCtrl"
     })
-
-
-
-        
     .when("/integrantes", {
         templateUrl: "/integrantes",
         controller: "integrantesCtrl"
     })
+
+
+
+        
     .when("/equiposintegrantes", {
         templateUrl: "/equiposintegrantes",
         controller: "equiposintegrantesCtrl"
@@ -89,8 +89,7 @@ app.controller("appCtrl", function ($scope, $http) {
         event.preventDefault()
         $.post("iniciarSesion", $(this).serialize(), function (respuesta) {
             if (respuesta.length) {
-                alert("Iniciaste Sesión")
-                window.location = "/#/productos"
+                window.location = "/#/integrantes"
                 
                 return
             }
@@ -213,6 +212,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
