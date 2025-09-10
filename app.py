@@ -27,19 +27,19 @@ con = mysql.connector.connect(
 app = Flask(__name__)
 CORS(app)
 
-@app.route("/pusherProductos")
-def pusherProductos():
+
+def pusherIntegrantes():
     import pusher
     
     pusher_client = pusher.Pusher(
       app_id = "2046028"
-      key = "a572e18b081c7b9a92cc"
-      secret = "e9f00f92316899c334f1"
+      key = "58f935c75b9acdc43024"
+      secret = "b4495b9f9853c4b2cdd5"
       cluster = "us2"
       ssl=True
     )
     
-    pusher_client.trigger("canalProductos", "eventoProductos", {"message": "Hola Mundo!"})
+    pusher_client.trigger("canalIntegrantes", "eventoIntegrantes", {"message": "Hola Mundo!"})
     return make_response(jsonify({}))
 
 @app.route("/")
@@ -78,13 +78,17 @@ def iniciarSesion():
     WHERE Nombre = %s
     AND Contrasena = %s
     """
-    val    = (Usuario, Contrasena)
+    val    = (usuario, contrasena)
 
     cursor.execute(sql, val)
     registros = cursor.fetchall()
     con.close()
 
     return make_response(jsonify(registros))
+
+
+
+
 
 
 @app.route("/integrantes")
@@ -278,6 +282,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
