@@ -72,17 +72,18 @@ def iniciarSesion():
     sql    = """
     SELECT IdUsuario
     FROM usuarios
-
-    WHERE Nombre = %s
-    AND Contrasena = %s
+    WHERE Nombre = %s AND Contrasena = %s
     """
-    val    = (usuario, contrasena)
-
+    val = (usuario, contrasena)
     cursor.execute(sql, val)
     registros = cursor.fetchall()
     con.close()
 
-    return make_response(jsonify(registros))
+    if registros:
+        return jsonify({"success": True, "usuario": registros[0]})
+    else:
+        return jsonify({"success": False, "error": "Usuario o contraseña incorrectos"}), 401
+
 
 
 
@@ -280,6 +281,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
