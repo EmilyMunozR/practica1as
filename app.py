@@ -111,7 +111,7 @@ def tbodyProductos():
     cursor.execute(sql)
     registros = cursor.fetchall()
     print("Registros:", registros) 
-    return render_template("tbodyIntegrantes.html", integrantea=registros)
+    return render_template("tbodyIntegrantes.html", integrantes=registros)
 
 
 
@@ -266,6 +266,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
