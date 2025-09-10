@@ -130,7 +130,7 @@ app.controller("integrantesCtrl", function ($scope, $http) {
 
         $.post("/integrante", {
             idIntegrante: "",
-            nombreInteegrante: $("#txtNombreIntegrante").val(),
+            nombreIntegrante: $("#txtNombreIntegrante").val(),
         })
     })
 })
@@ -248,6 +248,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
