@@ -30,6 +30,7 @@ CORS(app)
 
 def pusherIntegrantes():
     try:
+        print("Disparando evento Pusher...")
         pusher_client = pusher.Pusher(
             app_id='2048639',
             key='85576a197a0fb5c211de',
@@ -307,6 +308,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
