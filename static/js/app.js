@@ -83,6 +83,8 @@ app.run(["$rootScope", "$location", "$timeout", function($rootScope, $location, 
 app.controller("appCtrl", function ($scope, $http) {
     $("#frmInicioSesion").submit(function (event) {
         event.preventDefault()
+        const datos = $(this).serialize();
+        console.log("Datos enviados:", datos);
         $.post("iniciarSesion", $(this).serialize(), function (respuesta) {
             if (respuesta.length) {
                 window.location = "/#/proyectosavances"
@@ -200,6 +202,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
