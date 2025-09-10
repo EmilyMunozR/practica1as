@@ -100,19 +100,16 @@ app.controller("appCtrl", function ($scope, $http) {
 })
 
 
-
 app.controller("integrantesCtrl", function ($scope, $http) {
     function buscarIntegrantes() {
         $.get("/tbodyIntegrantes", function (trsHTML) {
             console.log("HTML recibido:", trsHTML)
             $("#tbodyIntegrantes").html(trsHTML)
         })
-
     }
 
     buscarIntegrantes()
     
-    // Enable pusher logging - don't include this in production
     Pusher.logToConsole = true
 
     var pusher = new Pusher('85576a197a0fb5c211de', {
@@ -120,7 +117,7 @@ app.controller("integrantesCtrl", function ($scope, $http) {
     });
 
     var channel = pusher.subscribe("integranteschannel")
-    channel.bind("eintegrantesevents", function(data) {
+    channel.bind("integrantesevents", function(data) {
         // alert(JSON.stringify(data))
         buscarIntegrantes()
     })
@@ -248,6 +245,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
