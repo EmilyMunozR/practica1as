@@ -117,7 +117,7 @@ app.controller("integrantesCtrl", function ($scope, $http) {
 
     var channel = pusher.subscribe("integranteschannel")
     channel.bind("integrantesevent", function(data) {
-      console.log("Evento recibido:", data)
+       buscarIntegrantes()
     })
 
 
@@ -244,6 +244,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
