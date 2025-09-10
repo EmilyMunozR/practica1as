@@ -101,6 +101,39 @@ app.controller("appCtrl", function ($scope, $http) {
 
 
 
+app.controller("integrantesCtrl", function ($scope, $http) {
+    function buscarIntegrantes() {
+        $.get("/tbodyIntegrantes", function (trsHTML) {
+            $("#tbodyIntegrantes").html(trsHTML)
+        })
+    }
+
+    buscarIntegrantes()
+
+    Pusher.logToConsole = true
+
+    var pusher = new Pusher('85576a197a0fb5c211de', {
+      cluster: 'us2'
+    });
+
+    var channel = pusher.subscribe('integranteschannel');
+    channel.bind('integrantesevent', function(data) {
+        // alert(JSON.stringify(data))
+    })
+
+    $(document).on("submit", "#frmIntegrante", function (event) {
+        event.preventDefault()
+
+        $.post("/integrante", {
+            id: "",
+            nombreIntegrante: $("#txtNombreIntegrante").val(),
+        })
+    })
+    
+})
+
+
+
 
 
 
@@ -212,6 +245,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
