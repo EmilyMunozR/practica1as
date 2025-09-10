@@ -17,6 +17,10 @@ app.config(function ($routeProvider, $locationProvider) {
         templateUrl: "/app",
         controller: "appCtrl"
     })
+
+
+
+        
     .when("/integrantes", {
         templateUrl: "/integrantes",
         controller: "integrantesCtrl"
@@ -83,17 +87,23 @@ app.run(["$rootScope", "$location", "$timeout", function($rootScope, $location, 
 app.controller("appCtrl", function ($scope, $http) {
     $("#frmInicioSesion").submit(function (event) {
         event.preventDefault()
-        const datos = $(this).serialize();
-        console.log("Datos enviados:", datos);
         $.post("iniciarSesion", $(this).serialize(), function (respuesta) {
             if (respuesta.length) {
-                window.location = "/#/proyectosavances"
+                alert("Iniciaste Sesión")
                 return
             }
+
             alert("Usuario y/o Contraseña Incorrecto(s)")
         })
     })
 })
+
+
+
+
+
+
+
 
 app.controller("productosCtrl", function ($scope, $http) {
     function buscarProductos() {
@@ -202,6 +212,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
