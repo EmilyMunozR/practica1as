@@ -113,8 +113,45 @@ def tbodyProductos():
 
     cursor.execute(sql)
     registros = cursor.fetchall()
-    print("Registros:", registros) 
+    
     return render_template("tbodyIntegrantes.html", integrantes=registros)
+
+@app.route("/integrantes/buscar", methods=["GET"])
+def buscarIntegrantes():
+    if not con.is_connected():
+        con.reconnect()
+
+    args     = request.args
+    busqueda = args["busqueda"]
+    busqueda = f"%{busqueda}%"
+
+    cursor = con.cursor(dictionary=True)
+    sql    = """
+    SELECT idIntegrante,
+           nombreIntegrante
+
+    FROM integrantes
+
+    WHERE nombreIntegrante LIKE %s
+
+    ORDER BY idIntegrante DESC
+
+    LIMIT 10 OFFSET 0
+    """
+    val = (busqueda,)
+
+    try:
+        cursor.execute(sql, val)
+        registros = cursor.fetchall()
+
+    except mysql.connector.errors.ProgrammingError as error:
+        print(f"Ocurrió un error de programación en MySQL: {error}")
+        registros = []
+
+    finally:
+        con.close()
+
+    return make_response(jsonify(registros))
 
 
 @app.route("/integrante", methods=["POST"])
@@ -153,6 +190,9 @@ def guardarIntegrante():
 
   
     
+
+
+
 
 
 
@@ -308,6 +348,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
