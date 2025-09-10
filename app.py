@@ -87,48 +87,47 @@ def iniciarSesion():
     return make_response(jsonify(registros))
 
 
-
-
-@app.route("/productos")
+@app.route("/integrantes")
 def productos():
-    return render_template("productos.html")
+    return render_template("integrantes.html")
 
 
-@app.route("/tbodyProductos")
+@app.route("/tbodyIntegrantes")
 def tbodyProductos():
     if not con.is_connected():
         con.reconnect()
 
     cursor = con.cursor(dictionary=True)
     sql    = """
-    SELECT Id_Producto,
-           Nombre_Producto,
-           Precio,
-           Existencias
+    SELECT idintegrante,
+           nombreintegrante
 
-    FROM productos
+    FROM integrantes
 
-    ORDER BY Id_Producto DESC
+    ORDER BY idintegrante DESC
 
     LIMIT 10 OFFSET 0
     """
 
+    return render_template("tbodyIntegrantes.html")
     cursor.execute(sql)
-    registros = cursor.fetchall()
+    #registros = cursor.fetchall()
 
     # Si manejas fechas y horas
-    """
-    for registro in registros:
-        fecha_hora = registro["Fecha_Hora"]
+    #"""
+    #for registro in registros:
+    #    fecha_hora = registro["Fecha_Hora"]
+    #
+    #    registro["Fecha_Hora"] = fecha_hora.strftime("%Y-%m-%d %H:%M:%S")
+    #    registro["Fecha"]      = fecha_hora.strftime("%d/%m/%Y")
+    #    registro["Hora"]       = fecha_hora.strftime("%H:%M:%S")
+    #"""
+    
 
-        registro["Fecha_Hora"] = fecha_hora.strftime("%Y-%m-%d %H:%M:%S")
-        registro["Fecha"]      = fecha_hora.strftime("%d/%m/%Y")
-        registro["Hora"]       = fecha_hora.strftime("%H:%M:%S")
-    """
 
-    return render_template("tbodyProductos.html", productos=registros)
 
-@app.route("/productos/ingredientes/<int:id>")
+
+@app.route("/proyectosavances/proyectos/<int:id>")
 def productos2(id):
     if not con.is_connected():
         con.reconnect()
@@ -279,6 +278,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
