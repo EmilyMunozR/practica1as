@@ -29,15 +29,18 @@ CORS(app)
 
 
 def pusherIntegrantes():
-    pusher_client = pusher.Pusher(
-      app_id='2048639',
-      key='85576a197a0fb5c211de',
-      secret='bbd4afc18e15b3760912',
-      cluster='us2',
-      ssl=True
-    )
+    try:
+        pusher_client = pusher.Pusher(
+            app_id='2048639',
+            key='85576a197a0fb5c211de',
+            secret='bbd4afc18e15b3760912',
+            cluster='us2',
+            ssl=True
+        )
+        pusher_client.trigger('integranteschannel', 'integrantesevent', {'message': 'hello world'})
+    except Exception as e:
+        print("Error en Pusher:", e)
 
-    pusher_client.trigger('integranteschannel', 'integrantesevent', {'message': 'hello world'})
 
 @app.route("/")
 def index():
@@ -142,7 +145,6 @@ def guardarIntegrante():
     con.close()
 
     pusherIntegrantes()
-
     return make_response(jsonify({"mensaje": "Integrante guardado"}))
 
 
@@ -305,6 +307,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
