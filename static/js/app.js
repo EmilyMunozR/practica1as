@@ -136,14 +136,14 @@ app.controller("integrantesCtrl", function ($scope, $http) {
     })
 })
 
-///// Eliminaar Integrantes
- $(document).on("click", ".btnEliminarIntegrante", function (event) {
+///// Eliminar Integrantes
+ $(document).on("click", ".btnEliminarIntegrante", function () {
         const id = $(this).data("id")
 
         if (confirm("¿Seguro que quieres eliminar este integrante?")) {
         $.post("/integrante/eliminar", { id: id }, function () {
             // Elimina la fila del DOM
-            $(`#btnEliminarIntegrante-${id}`).closest("tr").remove()
+            $(`button[data-id='${id}']`).closest("tr").remove()
         }).fail(function () {
             alert("Error al eliminar el integrante")
         })
@@ -288,4 +288,5 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
