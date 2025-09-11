@@ -2,8 +2,8 @@
   {% for proyecto in proyectos %}
     <tr>
       <td>{{ proyecto.idProyecto }}</td>
+      <td>{{ proyecto.tituloProyecto }}</td> 
       <td>{{ proyecto.nombreEquipo }}</td>
-      <td>{{ proyecto.tituloProyecto }}</td>
       <td>{{ proyecto.objetivo }}</td>
       <td>{{ proyecto.estado }}</td>
       <td>
@@ -23,5 +23,6 @@
     <td colspan="7">No hay registros</td>
   </tr>
 {% endif %}
+
 
 
