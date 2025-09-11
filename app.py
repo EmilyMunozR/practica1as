@@ -27,7 +27,6 @@ con = mysql.connector.connect(
 app = Flask(__name__)
 CORS(app)
 
-
 def pusherIntegrantes():
     pusher_client = pusher.Pusher(
         app_id='2048639',
@@ -36,8 +35,18 @@ def pusherIntegrantes():
         cluster='us2',
         ssl=True
     )
-    
-    pusher_client.trigger('integranteschannel', 'integrantesevent', {'message': 'hello world'})
+    pusher_client.trigger('integranteschannel', 'integrantesevent', {'message': 'hello Integrantes'})
+    return make_response(jsonify({}))
+
+def pusherEquiposIntegrantes():
+    pusher_client = pusher.Pusher(
+        app_id='2048639',
+        key='85576a197a0fb5c211de',
+        secret='bbd4afc18e15b3760912',
+        cluster='us2',
+        ssl=True
+    )
+    pusher_client.trigger('equiposIntegranteschannel', 'equiposIntegrantesevent', {'message': 'hello Equipos Integrantes'})
     return make_response(jsonify({}))
 
 def pusherEquipos():
@@ -48,8 +57,29 @@ def pusherEquipos():
         cluster='us2',
         ssl=True
     )
-    
-    pusher_client.trigger('equiposchannel', 'equiposevent', {'message': 'hello world'})
+    pusher_client.trigger('equiposchannel', 'equiposevent', {'message': 'hello Equipos'})
+    return make_response(jsonify({}))
+
+def pusherProyectos():
+    pusher_client = pusher.Pusher(
+        app_id='2048639',
+        key='85576a197a0fb5c211de',
+        secret='bbd4afc18e15b3760912',
+        cluster='us2',
+        ssl=True
+    )
+    pusher_client.trigger('proyectoschannel', 'proyectosevent', {'message': 'hello Proyectos'})
+    return make_response(jsonify({}))
+
+def pusherProyectosAvances():
+    pusher_client = pusher.Pusher(
+        app_id='2048639',
+        key='85576a197a0fb5c211de',
+        secret='bbd4afc18e15b3760912',
+        cluster='us2',
+        ssl=True
+    )
+    pusher_client.trigger('proyectosAvanceschannel', 'proyectosAvancesevent', {'message': 'hello Proyectos Avances'})
     return make_response(jsonify({}))
 
 @app.route("/")
@@ -537,6 +567,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
