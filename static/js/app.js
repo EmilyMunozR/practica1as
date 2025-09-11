@@ -151,8 +151,7 @@ app.controller("integrantesCtrl", function ($scope, $http) {
 })
 
 
-///////////////// proyectos controller
-///////////////// proyectos controller
+///////////////// proyectos controller//////////////////////////////////////////////
 app.controller("proyectosCtrl", function ($scope, $http) {
     
     // Función para cargar equipos en el dropdown
@@ -191,13 +190,24 @@ app.controller("proyectosCtrl", function ($scope, $http) {
 
     $(document).on("submit", "#frmProyectos", function (event) {
         event.preventDefault();
-
+    
         $.post("/proyectos", {
             idProyecto: "",
             tituloProyecto: $("#txtNombreProyecto").val(),
-            idEquipo: $("#txtEquipo").val(),        // Ahora envía el ID del equipo
+            idEquipo: $("#txtEquipo").val(),
             objetivo: $("#txtObjetivo").val(),
             estado: $("#txtEstado").val(),
+        }).done(function(response) {
+            // Limpiar formulario
+            $("#frmProyectos")[0].reset();
+            
+            // Recargar dropdown de equipos
+            cargarEquipos();
+            
+            alert("Proyecto guardado exitosamente");
+        }).fail(function(xhr, status, error) {
+            console.log("Error:", error);
+            alert("Error al guardar el proyecto");
         });
     });
 });
@@ -365,6 +375,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
