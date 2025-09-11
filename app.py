@@ -390,8 +390,141 @@ def eliminarEquipo():
 #////////////////////////////////////////////////////    
 
 
+@app.route("/proyectos")
+def proyectos():
+    return render_template("proyectos.html")
+
+@app.route("/tbodyProyectos")
+def tbodyProyectos():
+    if not con.is_connected():
+        con.reconnect()
+
+    cursor = con.cursor(dictionary=True)
+    sql    = """
+    SELECT 
+            p.idProyecto,
+            p.tituloProyecto,
+            e.nombreEquipo
+            p.objetivo,
+            p.estado
+
+    FROM proyectos AS p
+
+    INNER JOIN equipos AS e
+            ON p.idEquipo = e.idEquipo
+    
+    ORDER BY p.estado DESC
+
+    LIMIT 10 OFFSET 0
+    """
+
+    cursor.execute(sql)
+    registros = cursor.fetchall()
+    
+    return render_template("tbodyProyectos.html", proyectos=registros)
+
+@app.route("/proyectos/buscar", methods=["GET"])
+def buscarProyectos():
+    if not con.is_connected():
+        con.reconnect()
+
+    args     = request.args
+    busqueda = args["busqueda"]
+    busqueda = f"%{busqueda}%"
+
+    cursor = con.cursor(dictionary=True)
+    sql    = """
+    SELECT 
+            p.idProyecto,
+            p.tituloProyecto,
+            p.objetivo,
+            p.estado
+
+    FROM proyectos AS p
+
+    INNER JOIN equipos AS e
+            ON p.idEquipo = e.idEquipo
+    
+    ORDER BY p.estado DESC
+
+    LIMIT 10 OFFSET 0
+    """
+    val = (busqueda,)
+
+    try:
+        cursor.execute(sql, val)
+        registros = cursor.fetchall()
+
+    except mysql.connector.errors.ProgrammingError as error:
+        print(f"Ocurrió un error de programación en MySQL: {error}")
+        registros = []
+
+    finally:
+        con.close()
+
+    return make_response(jsonify(registros))
+
+@app.route("/proyectos", methods=["POST"])
+def guardarProyectos():
+    if not con.is_connected():
+        con.reconnect()
+
+    idProyecto = request.form["idProyecto"]
+    NombreProyecto = request.form["txtNombreProyecto"]
+    Objetivo = request.form["txtObjetivo"]
+    NombreEquipo = request.form["txtEquipo"]
+    Estado = request.form["txtEstado"]
+    cursor = con.cursor()
+
+    if idProyecto:
+        sql = """
+        UPDATE proyectos
+
+        SET NombreProyecto = %s
+        SET NombreEquipo = %s
+        SET Objetivo = %s
+        SET NombreProyecto = %s
+
+        WHERE idProyecto = %s
+        """
+        val = (NombreProyecto, Objetivo, NombreEquipo, Estado, idProyecto)
+    else:
+        sql = """
+        INSERT INTO proyectos (NombreProyecto, Objetivo, nombreEquipo, Estado)
+        VALUES (%s)
+        """
+        val = (NombreProyecto, Objetivo, NombreEquipo, Estado)
+
+    cursor.execute(sql, val)
+    con.commit()
+    con.close()
+
+    pusherProyectos()
+    return make_response(jsonify({"mensaje": "Proyecto guardado"}))
 
 
+############# Eliminar
+@app.route("/proyectos/eliminar", methods=["POST"])
+def eliminarProyecto():
+    if not con.is_connected():
+        con.reconnect()
+
+    id = request.form["id"]
+
+    cursor = con.cursor(dictionary=True)
+    sql    = """
+    DELETE FROM proyectos
+    WHERE idProyecto = %s
+    """
+    val    = (id,)
+
+    cursor.execute(sql, val)
+    con.commit()
+    con.close()
+
+    return make_response(jsonify({}))
+
+#/////////////////////////////////////////////////////////
 
 
 
@@ -563,6 +696,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
