@@ -1,11 +1,7 @@
 <form id="frmProyectoAvance" method="post">
     <div class="mb-1">
-        <label>Proyecto</label>
-        <select class="form-control" id="slcProyecto" name="slcProyecto">
-            {% for proyecto in proyectos %}
-                <option value="{{ proyecto.idProyecto }}">{{ proyecto.tituloProyecto }}</option>
-            {% endfor %}
-        </select>
+    <label>Proyecto</label>
+    <input type="text" class="form-control" id="txtProyecto" name="txtProyecto" value="Proyecto de Prueba">
     </div>
     <div class="mb-1">
         <label>Progreso (%)</label>
@@ -35,3 +31,4 @@
         <tbody id="tbodyProyectosAvances"></tbody>
     </table>
 </div>
+
