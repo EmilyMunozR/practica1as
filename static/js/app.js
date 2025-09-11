@@ -154,7 +154,7 @@ app.controller("integrantesCtrl", function ($scope, $http) {
 ///////////////// proyectos controller
 
 app.controller("proyectosCtrl", function ($scope, $http) {
-    function buscarIntegrantes() {
+    function buscarProyectos() {
         $.get("/tbodyProyectos", function (trsHTML) {
             $("#tbodyProyectos").html(trsHTML)
         })
@@ -177,7 +177,7 @@ app.controller("proyectosCtrl", function ($scope, $http) {
     $(document).on("submit", "#frmProyectos", function (event) {
         event.preventDefault()
 
-        $.post("/proyecto", {
+        $.post("/proyectos", {
             idProyecto: "",
             NombreProyecto: $("#txtNombreProyecto").val(),
             Equipo: $("#txtEquipo").val(),
@@ -302,6 +302,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
