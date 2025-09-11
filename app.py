@@ -87,7 +87,7 @@ def iniciarSesion():
 
 
 @app.route("/integrantes")
-def productos():
+def integrantes():
     return render_template("integrantes.html")
 
 @app.route("/tbodyIntegrantes")
@@ -405,6 +405,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
