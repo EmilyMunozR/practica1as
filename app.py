@@ -666,6 +666,27 @@ def eliminarProyecto():
     con.close()
 
     return make_response(jsonify({}))
+
+
+
+#//////////////esta wea me trae una lista pal inerjoin //////////////////////////////////////////////////////////
+@app.route("/equipos/lista")
+def obtenerEquipos():
+    if not con.is_connected():
+        con.reconnect()
+
+    cursor = con.cursor(dictionary=True)
+    sql = """
+    SELECT idEquipo, nombreEquipo
+    FROM equipos
+    ORDER BY nombreEquipo ASC
+    """
+    
+    cursor.execute(sql)
+    registros = cursor.fetchall()
+    con.close()
+    
+    return make_response(jsonify(registros))
 #/////////////////////////////////////////////////////////
 
 
@@ -838,52 +859,3 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
