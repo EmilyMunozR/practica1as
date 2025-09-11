@@ -207,27 +207,26 @@ def editarIntegrante(id):
 
 @app.route("/integrante/eliminar", methods=["POST"])
 def eliminarIntegrante():
-    if not con.is_connected():
-        con.reconnect()
+    try:
+        if not con.is_connected():
+            con.reconnect()
 
-    id = request.form["id"]
+        id = request.form.get("id")
+        if not id:
+            return make_response(jsonify({"error": "ID no proporcionado"}), 400)
 
-    cursor = con.cursor(dictionary=True)
-    sql = """
-    
-    DELETE 
-    
-    FROM integrantes
-    
-    WHERE idIntegrante = %s
-    """
-    val = (id,)
+        cursor = con.cursor(dictionary=True)
+        sql = "DELETE FROM integrantes WHERE idIntegrante = %s"
+        val = (id,)
+        cursor.execute(sql, val)
+        con.commit()
+        con.close()
 
-    cursor.execute(sql, val)
-    con.commit()
-    con.close()
+        return make_response(jsonify({"mensaje": "Integrante eliminado"}))
+    except Exception as e:
+        print("Error al eliminar:", e)
+        return make_response(jsonify({"error": "Error interno"}), 500)
 
-    return make_response(jsonify({"mensaje": "Integrante eliminado"}))
 
     
 
@@ -405,6 +404,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
