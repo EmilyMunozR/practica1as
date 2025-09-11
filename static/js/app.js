@@ -210,6 +210,19 @@ app.controller("proyectosCtrl", function ($scope, $http) {
             alert("Error al guardar el proyecto");
         });
     });
+    
+        $(document).on("click", ".btnEliminarProyecto", function () {
+        const id = $(this).data("id")
+
+        if (confirm("¿Seguro que quieres eliminar este proyecto?")) {
+            $.post("/proyectos/eliminar", { id: id }, function () {
+                // Elimina la fila del DOM
+                $(`button[data-id='${id}']`).closest("tr").remove()
+            }).fail(function () {
+                alert("Error al eliminar el proyecto")
+            })
+        }
+    })
 });
 //////////////Equipos Controllers///////////////////////////
 
@@ -375,6 +388,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
