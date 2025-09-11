@@ -669,7 +669,7 @@ def eliminarProyecto():
 
 #//////////////esta wea me trae una lista pal inerjoin //////////////////////////////////////////////////////////
 @app.route("/equipos/lista")
-def obtenerEquipos():
+def cargarEquipos():
     if not con.is_connected():
         con.reconnect()
 
@@ -857,6 +857,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
