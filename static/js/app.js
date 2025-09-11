@@ -210,8 +210,10 @@ app.controller("proyectosCtrl", function ($scope, $http) {
             alert("Error al guardar el proyecto");
         });
     });
-    
-        $(document).on("click", ".btnEliminarProyecto", function () {
+    // Agregar este código después del controlador proyectosCtrl en app.js
+
+    ///// Eliminar Proyectos
+    $(document).on("click", ".btnEliminarProyecto", function () {
         const id = $(this).data("id")
 
         if (confirm("¿Seguro que quieres eliminar este proyecto?")) {
@@ -388,6 +390,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
