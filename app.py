@@ -86,7 +86,6 @@ def pusherProyectosAvances():
 def index():
     if not con.is_connected():
         con.reconnect()
-
     con.close()
 
     return render_template("index.html")
@@ -98,7 +97,6 @@ def app2():
     con.close()
 
     return render_template("login.html")
-    # return "<h5>Hola, soy la view app</h5>"
 
 @app.route("/iniciarSesion", methods=["POST"])
 def iniciarSesion():
@@ -124,12 +122,10 @@ def iniciarSesion():
 
     return make_response(jsonify(registros))
 
-
-
-
-
+#   Rutas  De  Integrantes    
 @app.route("/integrantes")
 def integrantes():
+    
     return render_template("integrantes.html")
 
 @app.route("/tbodyIntegrantes")
@@ -567,6 +563,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
