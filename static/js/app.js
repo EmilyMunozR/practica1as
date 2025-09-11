@@ -234,6 +234,56 @@ app.controller("equiposCtrl", function ($scope, $http) {
         })
     }
 })
+
+
+///////////////////////////////////equiposIntegrantes////////////////////////////////////////////////////////////////////////////
+
+
+app.controller("equiposintegrantesCtrl", function ($scope, $http) {
+    function buscarEquipos() {
+        $.get("/tbodyEquipos", function (trsHTML) {
+            $("#tbodyEquipos").html(trsHTML)
+        })
+    }
+
+    buscarEquipos()
+    
+    Pusher.logToConsole = true
+
+    var pusher = new Pusher('85576a197a0fb5c211de', {
+      cluster: 'us2'
+    });
+
+    var channel = pusher.subscribe("equiposchannel")
+    channel.bind("equiposevent", function(data) {
+       buscarEquipos()
+    })
+
+
+    $(document).on("submit", "#frmEquipo", function (event) {
+        event.preventDefault()
+
+        $.post("/equipo", {
+            idEquipo: "",
+            nombreEquipo: $("#txtEquipoNombre").val(),
+        })
+    })
+})
+
+
+ $(document).on("click", ".btnEliminarIntegranteEquipo", function () {
+        const id = $(this).data("id")
+
+        if (confirm("¿Seguro que quieres eliminar este Equipo?")) {
+        $.post("/equipo/eliminar", { id: id }, function () {
+            // Elimina la fila del DOM
+            $(`button[data-id='${id}']`).closest("tr").remove()
+        }).fail(function () {
+            alert("Error al eliminar el Team")
+        })
+    }
+})
+
 ////////////////////////////////////////////////////////////
 ///////////////// proyectosavances controller
 
@@ -302,6 +352,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
