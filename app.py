@@ -613,30 +613,29 @@ def guardarProyectos():
         con.reconnect()
 
     idProyecto = request.form["idProyecto"]
-    NombreProyecto = request.form["NombreProyecto"]
-    Objetivo = request.form["Objetivo"] 
-    Equipo = request.form["Equipo"]
-    Estado = request.form["Estado"]
+    tituloProyecto = request.form["tituloProyecto"]
+    idEquipo = request.form["idEquipo"]
+    objetivo = request.form["objetivo"]
+    estado = request.form["estado"]
+    
     cursor = con.cursor()
 
     if idProyecto:
         sql = """
         UPDATE proyectos
-
         SET tituloProyecto = %s,
             idEquipo = %s,
             objetivo = %s,
             estado = %s
         WHERE idProyecto = %s
-
         """
-        val = (NombreProyecto, Objetivo, Equipo, Estado, idProyecto)
+        val = (tituloProyecto, idEquipo, objetivo, estado, idProyecto)
     else:
         sql = """
-        INSERT INTO proyectos (tituloProyecto, objetivo, idEquipo, estado)
+        INSERT INTO proyectos (tituloProyecto, idEquipo, objetivo, estado)
         VALUES (%s, %s, %s, %s)
         """
-        val = (NombreProyecto, Objetivo, Equipo, Estado)
+        val = (tituloProyecto, idEquipo, objetivo, estado)
 
     cursor.execute(sql, val)
     con.commit()
@@ -644,7 +643,6 @@ def guardarProyectos():
 
     pusherProyectos()
     return make_response(jsonify({"mensaje": "Proyecto guardado"}))
-
 
 ############# Eliminar
 @app.route("/proyectos/eliminar", methods=["POST"])
@@ -859,3 +857,4 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
