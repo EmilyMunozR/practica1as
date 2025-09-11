@@ -241,8 +241,8 @@ app.controller("equiposCtrl", function ($scope, $http) {
 
 app.controller("equiposintegrantesCtrl", function ($scope, $http) {
     function buscarEquipos() {
-        $.get("/tbodyEquipos", function (trsHTML) {
-            $("#tbodyEquipos").html(trsHTML)
+        $.get("/tbodyequiposintegrantes", function (trsHTML) {
+            $("#tbodyequiposintegrantes").html(trsHTML)
         })
     }
 
@@ -352,6 +352,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
