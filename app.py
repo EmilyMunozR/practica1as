@@ -265,6 +265,71 @@ def eliminarIntegrante():
     pusherIntegrantes()
     return make_response(jsonify({"mensaje": "Integrante eliminado"}))
 
+    # ////////////////// proyectosavances //////////////////
+
+# Tbody de Proyectos Avances
+@app.route("/tbodyProyectosAvances")
+def tbody_proyectosavances():
+    cursor = mysql.connection.cursor()
+    sql = """
+        SELECT pa.idProyectoAvance, pa.progreso, pa.descripcion, pa.fechaHora, p.tituloProyecto
+        FROM proyectosavances pa
+        INNER JOIN proyectos p ON pa.idProyecto = p.idProyecto
+    """
+    cursor.execute(sql)
+    proyectosavances = cursor.fetchall()
+    cursor.close()
+    return render_template("tbodyProyectosAvances.html", proyectosavances=proyectosavances)
+
+
+# Insertar Proyecto Avance
+@app.route("/proyectoavance", methods=["POST"])
+def proyectoavance():
+    idProyectoAvance = request.form["idProyectoAvance"]
+    idProyecto = request.form["idProyecto"]
+    progreso = request.form["progreso"]
+    descripcion = request.form["descripcion"]
+
+    cursor = mysql.connection.cursor()
+
+    if idProyectoAvance == "":  # Nuevo registro
+        sql = """
+            INSERT INTO proyectosavances (idProyecto, progreso, descripcion, fechaHora)
+            VALUES (%s, %s, %s, NOW())
+        """
+        cursor.execute(sql, (idProyecto, progreso, descripcion))
+    else:  # Aquí podrías manejar actualización si lo necesitas
+        sql = """
+            UPDATE proyectosavances
+            SET idProyecto=%s, progreso=%s, descripcion=%s, fechaHora=NOW()
+            WHERE idProyectoAvance=%s
+        """
+        cursor.execute(sql, (idProyecto, progreso, descripcion, idProyectoAvance))
+
+    mysql.connection.commit()
+    cursor.close()
+
+    # Pusher event
+    pusher_client.trigger("proyectosavanceschannel", "proyectosavancesevent", {"message": "actualizar"})
+
+    return "OK"
+
+
+# Eliminar Proyecto Avance
+@app.route("/proyectoavance/eliminar", methods=["POST"])
+def proyectoavance_eliminar():
+    idProyectoAvance = request.form["id"]
+
+    cursor = mysql.connection.cursor()
+    sql = "DELETE FROM proyectosavances WHERE idProyectoAvance = %s"
+    cursor.execute(sql, (idProyectoAvance,))
+    mysql.connection.commit()
+    cursor.close()
+
+    # Pusher event
+    pusher_client.trigger("proyectosavanceschannel", "proyectosavancesevent", {"message": "eliminar"})
+
+    return "OK"
 
 #/////////////////////Equipos/////////////////////////////
   
@@ -696,6 +761,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
