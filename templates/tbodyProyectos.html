@@ -11,6 +11,11 @@
         Eliminar
       </button>
       </td>
+      <td>
+        <button class="btn btn-danger btn-end btnModificarProyecto" data-id="{{ proyecto.idProyecto }}">
+          Modificar
+        </button>
+      </td>
     </tr>
   {% endfor %}
 {% else %}
@@ -18,3 +23,4 @@
     <td colspan="6">No hay registros</td>
   </tr>
 {% endif %}
+
