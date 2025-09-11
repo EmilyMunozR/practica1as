@@ -2,14 +2,19 @@
   {% for proyecto in proyectos %}
     <tr>
       <td>{{ proyecto.idProyecto }}</td>
-      <td>{{ proyecto.tituloProyecto }}</td>
       <td>{{ proyecto.nombreEquipo }}</td>
+      <td>{{ proyecto.tituloProyecto }}</td>
       <td>{{ proyecto.objetivo }}</td>
       <td>{{ proyecto.estado }}</td>
+      <td>
+        <button class="btn btn-danger btn-end btnEliminarProyecto" data-id="{{ proyecto.idProyecto }}">
+        Eliminar
+      </button>
+      </td>
     </tr>
   {% endfor %}
 {% else %}
   <tr>
-    <td colspan="5">No hay registros</td>
+    <td colspan="6">No hay registros</td>
   </tr>
 {% endif %}
