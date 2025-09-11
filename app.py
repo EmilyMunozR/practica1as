@@ -40,6 +40,18 @@ def pusherIntegrantes():
     pusher_client.trigger('integranteschannel', 'integrantesevent', {'message': 'hello world'})
     return make_response(jsonify({}))
 
+def pusherEquipos():
+    pusher_client = pusher.Pusher(
+        app_id='2048639',
+        key='85576a197a0fb5c211de',
+        secret='bbd4afc18e15b3760912',
+        cluster='us2',
+        ssl=True
+    )
+    
+    pusher_client.trigger('equiposchannel', 'equiposevent', {'message': 'hello world'})
+    return make_response(jsonify({}))
+
 @app.route("/")
 def index():
     if not con.is_connected():
@@ -228,7 +240,106 @@ def eliminarIntegrante():
         return make_response(jsonify({"error": "Error interno"}), 500)
 
 
+#/////////////////////Equipos/////////////////////////////
+  
+@app.route("/equipos")
+def equipos():
+    return render_template("equipos.html")
+
+
+@app.route("/tbodyEquipos")
+def tbodyEquipos():
+    if not con.is_connected():
+        con.reconnect()
+
+    cursor = con.cursor(dictionary=True)
+    sql    = """
+    SELECT idEquipo,
+           nombreEquipo
+
+    FROM equipos
+
+    ORDER BY idEquipo DESC
+
+    LIMIT 10 OFFSET 0
+    """
+
+    cursor.execute(sql)
+    registros = cursor.fetchall()
     
+    return render_template("tbodyEquipos.html", equipos=registros)
+
+
+@app.route("/equipos/buscar", methods=["GET"])
+def buscarEquios():
+    if not con.is_connected():
+        con.reconnect()
+
+    args     = request.args
+    busqueda = args["busqueda"]
+    busqueda = f"%{busqueda}%"
+
+    cursor = con.cursor(dictionary=True)
+    sql    = """
+    SELECT idEquipo,
+           nombreEquipo
+
+    FROM equipos
+
+    WHERE nombreEquipo LIKE %s
+
+    ORDER BY idEquipo DESC
+
+    LIMIT 10 OFFSET 0
+    """
+    val = (busqueda,)
+
+    try:
+        cursor.execute(sql, val)
+        registros = cursor.fetchall()
+
+    except mysql.connector.errors.ProgrammingError as error:
+        print(f"Ocurrió un error de programación en MySQL: {error}")
+        registros = []
+
+    finally:
+        con.close()
+
+    return make_response(jsonify(registros))
+
+
+@app.route("/equipo", methods=["POST"])
+def guardarEquipo():
+    if not con.is_connected():
+        con.reconnect()
+
+    idEquipo = request.form["idEquipo"]
+    nombreEquipo = request.form["nombreEquipo"]
+
+    cursor = con.cursor()
+
+    if idEquipo:
+        sql = """
+        UPDATE equipos
+        SET nombreEquipo = %s
+        WHERE idEquipo = %s
+        """
+        val = (nombreEquipo, idEquipo)
+    else:
+        sql = """
+        INSERT INTO equipos (nombreEquipo)
+        VALUES (%s)
+        """
+        val = (nombreEquipo,)
+
+    cursor.execute(sql, val)
+    con.commit()
+    con.close()
+
+    pusherEquipos()
+    return make_response(jsonify({"mensaje": "Equipo guardado exitosamente"}))
+
+#////////////////////////////////////////////////////    
 
 
 
@@ -404,6 +515,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
