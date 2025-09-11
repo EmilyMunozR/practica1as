@@ -266,70 +266,154 @@ def eliminarIntegrante():
     return make_response(jsonify({"mensaje": "Integrante eliminado"}))
 
     # ////////////////// proyectosavances //////////////////
+#   Rutas  De  Proyectos Avances    
+@app.route("/proyectosavances")
+def proyectosavances():
+    return render_template("proyectosavances.html")
 
-# Tbody de Proyectos Avances
+
 @app.route("/tbodyProyectosAvances")
-def tbody_proyectosavances():
-    cursor = mysql.connection.cursor()
+def tbodyProyectosAvances():
+    if not con.is_connected():
+        con.reconnect()
+
+    cursor = con.cursor(dictionary=True)
     sql = """
-        SELECT pa.idProyectoAvance, pa.progreso, pa.descripcion, pa.fechaHora, p.tituloProyecto
-        FROM proyectosavances pa
-        INNER JOIN proyectos p ON pa.idProyecto = p.idProyecto
+    SELECT pa.idProyectoAvance,
+           pa.progreso,
+           pa.descripcion,
+           pa.fechaHora,
+           p.tituloProyecto
+    FROM proyectosavances pa
+    INNER JOIN proyectos p ON pa.idProyecto = p.idProyecto
+    ORDER BY pa.idProyectoAvance DESC
+    LIMIT 10 OFFSET 0
     """
     cursor.execute(sql)
-    proyectosavances = cursor.fetchall()
-    cursor.close()
-    return render_template("tbodyProyectosAvances.html", proyectosavances=proyectosavances)
+    registros = cursor.fetchall()
+    
+    return render_template("tbodyProyectosAvances.html", proyectosavances=registros)
 
 
-# Insertar Proyecto Avance
+@app.route("/proyectosavances/buscar", methods=["GET"])
+def buscarProyectosAvances():
+    if not con.is_connected():
+        con.reconnect()
+
+    args     = request.args
+    busqueda = args["busqueda"]
+    busqueda = f"%{busqueda}%"
+
+    cursor = con.cursor(dictionary=True)
+    sql = """
+    SELECT pa.idProyectoAvance,
+           pa.progreso,
+           pa.descripcion,
+           pa.fechaHora,
+           p.tituloProyecto
+    FROM proyectosavances pa
+    INNER JOIN proyectos p ON pa.idProyecto = p.idProyecto
+    WHERE p.tituloProyecto LIKE %s OR pa.descripcion LIKE %s
+    ORDER BY pa.idProyectoAvance DESC
+    LIMIT 10 OFFSET 0
+    """
+    val = (busqueda, busqueda)
+
+    try:
+        cursor.execute(sql, val)
+        registros = cursor.fetchall()
+    except mysql.connector.errors.ProgrammingError as error:
+        print(f"Ocurrió un error de programación en MySQL: {error}")
+        registros = []
+    finally:
+        con.close()
+
+    return make_response(jsonify(registros))
+
+
 @app.route("/proyectoavance", methods=["POST"])
-def proyectoavance():
+def guardarProyectoAvance():
+    if not con.is_connected():
+        con.reconnect()
+
     idProyectoAvance = request.form["idProyectoAvance"]
-    idProyecto = request.form["idProyecto"]
-    progreso = request.form["progreso"]
-    descripcion = request.form["descripcion"]
+    idProyecto       = request.form["idProyecto"]
+    progreso         = request.form["progreso"]
+    descripcion      = request.form["descripcion"]
 
-    cursor = mysql.connection.cursor()
+    cursor = con.cursor()
 
-    if idProyectoAvance == "":  # Nuevo registro
+    if idProyectoAvance:
         sql = """
-            INSERT INTO proyectosavances (idProyecto, progreso, descripcion, fechaHora)
-            VALUES (%s, %s, %s, NOW())
+        UPDATE proyectosavances
+        SET idProyecto = %s,
+            progreso   = %s,
+            descripcion = %s,
+            fechaHora = NOW()
+        WHERE idProyectoAvance = %s
         """
-        cursor.execute(sql, (idProyecto, progreso, descripcion))
-    else:  # Aquí podrías manejar actualización si lo necesitas
+        val = (idProyecto, progreso, descripcion, idProyectoAvance)
+    else:
         sql = """
-            UPDATE proyectosavances
-            SET idProyecto=%s, progreso=%s, descripcion=%s, fechaHora=NOW()
-            WHERE idProyectoAvance=%s
+        INSERT INTO proyectosavances (idProyecto, progreso, descripcion, fechaHora)
+        VALUES (%s, %s, %s, NOW())
         """
-        cursor.execute(sql, (idProyecto, progreso, descripcion, idProyectoAvance))
+        val = (idProyecto, progreso, descripcion)
 
-    mysql.connection.commit()
-    cursor.close()
+    cursor.execute(sql, val)
+    con.commit()
+    con.close()
 
-    # Pusher event
-    pusher_client.trigger("proyectosavanceschannel", "proyectosavancesevent", {"message": "actualizar"})
-
-    return "OK"
+    pusherProyectosAvances()
+    return make_response(jsonify({"mensaje": "Proyecto Avance guardado"}))
 
 
-# Eliminar Proyecto Avance
+@app.route("/proyectoavance/<int:id>")
+def editarProyectoAvance(id):
+    if not con.is_connected():
+        con.reconnect()
+
+    cursor = con.cursor(dictionary=True)
+    sql = """
+    SELECT pa.idProyectoAvance,
+           pa.idProyecto,
+           pa.progreso,
+           pa.descripcion,
+           pa.fechaHora,
+           p.tituloProyecto
+    FROM proyectosavances pa
+    INNER JOIN proyectos p ON pa.idProyecto = p.idProyecto
+    WHERE pa.idProyectoAvance = %s
+    """
+    val = (id,)
+
+    cursor.execute(sql, val)
+    registros = cursor.fetchall()
+    con.close()
+
+    return make_response(jsonify(registros))
+
+
 @app.route("/proyectoavance/eliminar", methods=["POST"])
-def proyectoavance_eliminar():
-    idProyectoAvance = request.form["id"]
+def eliminarProyectoAvance():
+    if not con.is_connected():
+        con.reconnect()
 
-    cursor = mysql.connection.cursor()
-    sql = "DELETE FROM proyectosavances WHERE idProyectoAvance = %s"
-    cursor.execute(sql, (idProyectoAvance,))
-    mysql.connection.commit()
-    cursor.close()
+    id = request.form.get("id")
 
-    # Pusher event
-    pusher_client.trigger("proyectosavanceschannel", "proyectosavancesevent", {"message": "eliminar"})
+    cursor = con.cursor(dictionary=True)
+    sql = """
+    DELETE FROM proyectosavances 
+    WHERE idProyectoAvance = %s
+    """
+    val = (id,)
+    
+    cursor.execute(sql, val)
+    con.commit()
+    con.close()
 
-    return "OK"
+    pusherProyectosAvances()
+    return make_response(jsonify({"mensaje": "Proyecto Avance eliminado"}))
 
 #/////////////////////Equipos/////////////////////////////
   
@@ -761,6 +845,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
