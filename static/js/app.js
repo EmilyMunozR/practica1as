@@ -152,42 +152,55 @@ app.controller("integrantesCtrl", function ($scope, $http) {
 
 
 ///////////////// proyectos controller
-
+///////////////// proyectos controller
 app.controller("proyectosCtrl", function ($scope, $http) {
+    
+    // Función para cargar equipos en el dropdown
+    function cargarEquipos() {
+        $.get("/equipos/lista", function (equipos) {
+            const $selectEquipo = $("#txtEquipo");
+            $selectEquipo.empty();
+            $selectEquipo.append('<option value="">Seleccionar equipo...</option>');
+            
+            equipos.forEach(function(equipo) {
+                $selectEquipo.append(`<option value="${equipo.idEquipo}">${equipo.nombreEquipo}</option>`);
+            });
+        });
+    }
+    
     function buscarProyectos() {
         $.get("/tbodyProyectos", function (trsHTML) {
             $("#tbodyProyectos").html(trsHTML)
         })
     }
 
-    buscarProyectos()
+    // Cargar equipos al inicializar la página
+    cargarEquipos();
+    buscarProyectos();
     
-    Pusher.logToConsole = true
+    Pusher.logToConsole = true;
 
     var pusher = new Pusher('85576a197a0fb5c211de', {
       cluster: 'us2'
     });
 
-    var channel = pusher.subscribe("proyectoschannel")
+    var channel = pusher.subscribe("proyectoschannel");
     channel.bind("proyectosevent", function(data) {
-       buscarProyectos()
-    })
-
+       buscarProyectos();
+    });
 
     $(document).on("submit", "#frmProyectos", function (event) {
-        event.preventDefault()
+        event.preventDefault();
 
         $.post("/proyectos", {
             idProyecto: "",
-            NombreProyecto: $("#txtNombreProyecto").val(),
-            Equipo: $("#txtEquipo").val(),
-            Objetivo: $("#txtObjetivo").val(),
-            Estado: $("#txtEstado").val(),
-            
-        })
-    })
-})
-
+            tituloProyecto: $("#txtNombreProyecto").val(),
+            idEquipo: $("#txtEquipo").val(),        // Ahora envía el ID del equipo
+            objetivo: $("#txtObjetivo").val(),
+            estado: $("#txtEstado").val(),
+        });
+    });
+});
 //////////////Equipos Controllers///////////////////////////
 
 app.controller("equiposCtrl", function ($scope, $http) {
@@ -352,6 +365,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
