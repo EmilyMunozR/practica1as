@@ -553,7 +553,7 @@ def tbodyProyectos():
     SELECT 
             p.idProyecto,
             p.tituloProyecto,
-            e.nombreEquipo
+            e.nombreEquipo,
             p.objetivo,
             p.estado
 
@@ -583,20 +583,14 @@ def buscarProyectos():
 
     cursor = con.cursor(dictionary=True)
     sql    = """
-    SELECT 
-            p.idProyecto,
-            p.tituloProyecto,
-            p.objetivo,
-            p.estado
 
+    SELECT p.idProyecto, p.tituloProyecto, p.objetivo, p.estado
     FROM proyectos AS p
-
-    INNER JOIN equipos AS e
-            ON p.idEquipo = e.idEquipo
-    
+    INNER JOIN equipos AS e ON p.idEquipo = e.idEquipo
+    WHERE p.tituloProyecto LIKE %s    -- FALTA ESTA LÍNEA
     ORDER BY p.estado DESC
-
     LIMIT 10 OFFSET 0
+    
     """
     val = (busqueda,)
 
@@ -619,30 +613,30 @@ def guardarProyectos():
         con.reconnect()
 
     idProyecto = request.form["idProyecto"]
-    NombreProyecto = request.form["txtNombreProyecto"]
-    Objetivo = request.form["txtObjetivo"]
-    NombreEquipo = request.form["txtEquipo"]
-    Estado = request.form["txtEstado"]
+    NombreProyecto = request.form["NombreProyecto"]
+    Objetivo = request.form["Objetivo"] 
+    Equipo = request.form["Equipo"]
+    Estado = request.form["Estado"]
     cursor = con.cursor()
 
     if idProyecto:
         sql = """
         UPDATE proyectos
 
-        SET NombreProyecto = %s
-        SET NombreEquipo = %s
-        SET Objetivo = %s
-        SET NombreProyecto = %s
-
+        SET tituloProyecto = %s,
+            idEquipo = %s,
+            objetivo = %s,
+            estado = %s
         WHERE idProyecto = %s
+
         """
-        val = (NombreProyecto, Objetivo, NombreEquipo, Estado, idProyecto)
+        val = (NombreProyecto, Objetivo, Equipo, Estado, idProyecto)
     else:
         sql = """
-        INSERT INTO proyectos (NombreProyecto, Objetivo, nombreEquipo, Estado)
-        VALUES (%s)
+        INSERT INTO proyectos (tituloProyecto, objetivo, idEquipo, estado)
+        VALUES (%s, %s, %s, %s)
         """
-        val = (NombreProyecto, Objetivo, NombreEquipo, Estado)
+        val = (NombreProyecto, Objetivo, Equipo, Estado)
 
     cursor.execute(sql, val)
     con.commit()
@@ -672,7 +666,6 @@ def eliminarProyecto():
     con.close()
 
     return make_response(jsonify({}))
-
 #/////////////////////////////////////////////////////////
 
 
@@ -845,6 +838,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
