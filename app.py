@@ -265,11 +265,26 @@ def eliminarIntegrante():
     pusherIntegrantes()
     return make_response(jsonify({"mensaje": "Integrante eliminado"}))
 
-    # ////////////////// proyectosavances //////////////////
+
 #   Rutas  De  Proyectos Avances    
 @app.route("/proyectosavances")
 def proyectosavances():
-    return render_template("proyectosavances.html")
+    if not con.is_connected():
+        con.reconnect()
+
+    cursor = con.cursor(dictionary=True)
+    # Traer proyectos para el select
+    sql = """
+    SELECT idProyecto, tituloProyecto
+    FROM proyectos
+    ORDER BY tituloProyecto ASC
+    """
+    cursor.execute(sql)
+    proyectos = cursor.fetchall()
+    con.close()
+
+    # Mandamos también los proyectos para el select
+    return render_template("proyectosavances.html", proyectos=proyectos)
 
 
 @app.route("/tbodyProyectosAvances")
@@ -291,44 +306,9 @@ def tbodyProyectosAvances():
     """
     cursor.execute(sql)
     registros = cursor.fetchall()
+    con.close()
     
     return render_template("tbodyProyectosAvances.html", proyectosavances=registros)
-
-
-@app.route("/proyectosavances/buscar", methods=["GET"])
-def buscarProyectosAvances():
-    if not con.is_connected():
-        con.reconnect()
-
-    args     = request.args
-    busqueda = args["busqueda"]
-    busqueda = f"%{busqueda}%"
-
-    cursor = con.cursor(dictionary=True)
-    sql = """
-    SELECT pa.idProyectoAvance,
-           pa.progreso,
-           pa.descripcion,
-           pa.fechaHora,
-           p.tituloProyecto
-    FROM proyectosavances pa
-    INNER JOIN proyectos p ON pa.idProyecto = p.idProyecto
-    WHERE p.tituloProyecto LIKE %s OR pa.descripcion LIKE %s
-    ORDER BY pa.idProyectoAvance DESC
-    LIMIT 10 OFFSET 0
-    """
-    val = (busqueda, busqueda)
-
-    try:
-        cursor.execute(sql, val)
-        registros = cursor.fetchall()
-    except mysql.connector.errors.ProgrammingError as error:
-        print(f"Ocurrió un error de programación en MySQL: {error}")
-        registros = []
-    finally:
-        con.close()
-
-    return make_response(jsonify(registros))
 
 
 @app.route("/proyectoavance", methods=["POST"])
@@ -336,14 +316,14 @@ def guardarProyectoAvance():
     if not con.is_connected():
         con.reconnect()
 
-    idProyectoAvance = request.form["idProyectoAvance"]
-    idProyecto       = request.form["idProyecto"]
-    progreso         = request.form["progreso"]
-    descripcion      = request.form["descripcion"]
+    idProyectoAvance = request.form.get("idProyectoAvance")
+    idProyecto       = request.form.get("slcProyecto")   # 👈 debe coincidir con el name del select
+    progreso         = request.form.get("txtProgreso")
+    descripcion      = request.form.get("txtDescripcion")
 
     cursor = con.cursor()
 
-    if idProyectoAvance:
+    if idProyectoAvance:  # Update
         sql = """
         UPDATE proyectosavances
         SET idProyecto = %s,
@@ -353,7 +333,7 @@ def guardarProyectoAvance():
         WHERE idProyectoAvance = %s
         """
         val = (idProyecto, progreso, descripcion, idProyectoAvance)
-    else:
+    else:  # Insert
         sql = """
         INSERT INTO proyectosavances (idProyecto, progreso, descripcion, fechaHora)
         VALUES (%s, %s, %s, NOW())
@@ -366,32 +346,6 @@ def guardarProyectoAvance():
 
     pusherProyectosAvances()
     return make_response(jsonify({"mensaje": "Proyecto Avance guardado"}))
-
-
-@app.route("/proyectoavance/<int:id>")
-def editarProyectoAvance(id):
-    if not con.is_connected():
-        con.reconnect()
-
-    cursor = con.cursor(dictionary=True)
-    sql = """
-    SELECT pa.idProyectoAvance,
-           pa.idProyecto,
-           pa.progreso,
-           pa.descripcion,
-           pa.fechaHora,
-           p.tituloProyecto
-    FROM proyectosavances pa
-    INNER JOIN proyectos p ON pa.idProyecto = p.idProyecto
-    WHERE pa.idProyectoAvance = %s
-    """
-    val = (id,)
-
-    cursor.execute(sql, val)
-    registros = cursor.fetchall()
-    con.close()
-
-    return make_response(jsonify(registros))
 
 
 @app.route("/proyectoavance/eliminar", methods=["POST"])
@@ -857,6 +811,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
