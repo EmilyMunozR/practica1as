@@ -325,53 +325,78 @@ app.controller("equiposintegrantesCtrl", function ($scope, $http) {
 ////////////////////////////////////////////////////////////
 ///////////////// proyectosavances controller
 
-///// Buscar Proyectos Avances
 app.controller("proyectosavancesCtrl", function ($scope, $http) {
+
+    // Cargar proyectos en el dropdown
+    function cargarProyectos() {
+        $.get("/proyectos/lista", function (proyectos) {
+            const $selectProyecto = $("#slcProyecto");
+            $selectProyecto.empty();
+            $selectProyecto.append('<option value="">Seleccionar proyecto...</option>');
+
+            proyectos.forEach(function(proyecto) {
+                $selectProyecto.append(
+                    `<option value="${proyecto.idProyecto}">${proyecto.tituloProyecto}</option>`
+                );
+            });
+        });
+    }
+
+    // Buscar proyectos avances
     function buscarProyectosAvances() {
         $.get("/tbodyProyectosAvances", function (trsHTML) {
-            $("#tbodyProyectosAvances").html(trsHTML)
-        })
+            $("#tbodyProyectosAvances").html(trsHTML);
+        });
     }
-    buscarProyectosAvances()
 
-    Pusher.logToConsole = true
+    // Inicializar
+    cargarProyectos();
+    buscarProyectosAvances();
+
+    // Pusher
+    Pusher.logToConsole = true;
 
     var pusher = new Pusher('85576a197a0fb5c211de', {
         cluster: 'us2'
     });
 
-    var channel = pusher.subscribe("proyectosavanceschannel")
+    var channel = pusher.subscribe("proyectosavanceschannel");
     channel.bind("proyectosavancesevent", function(data) {
-        buscarProyectosAvances()
-    })
+        buscarProyectosAvances();
+    });
 
-
-///// Insertar Proyecto Avance
+    // Insertar Proyecto Avance
     $(document).on("submit", "#frmProyectoAvance", function (event) {
-        event.preventDefault()
+        event.preventDefault();
 
         $.post("/proyectoavance", {
             idProyectoAvance: "",
             idProyecto: $("#slcProyecto").val(),
             progreso: $("#txtProgreso").val(),
             descripcion: $("#txtDescripcion").val(),
-        })
-    })
-})
+        }).done(function() {
+            // limpiar formulario
+            $("#frmProyectoAvance")[0].reset();
+            alert("Avance guardado correctamente");
+        }).fail(function() {
+            alert("Error al guardar el avance");
+        });
+    });
+});
 
-///// Eliminar Proyecto Avance
+// Eliminar Proyecto Avance
 $(document).on("click", ".btnEliminarAvance", function () {
-    const id = $(this).data("id")
+    const id = $(this).data("id");
 
     if (confirm("¿Seguro que quieres eliminar este avance?")) {
         $.post("/proyectoavance/eliminar", { id: id }, function () {
-            // Elimina la fila del DOM
-            $(`button[data-id='${id}']`).closest("tr").remove()
+            $(`button[data-id='${id}']`).closest("tr").remove();
         }).fail(function () {
-            alert("Error al eliminar el avance")
-        })
+            alert("Error al eliminar el avance");
+        });
     }
-})
+});
+
 ///////////////////////////////////////////////////////////
 const DateTime = luxon.DateTime
 let lxFechaHora
@@ -390,6 +415,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
