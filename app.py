@@ -1,4 +1,4 @@
-i# python.exe -m venv .venv
+# python.exe -m venv .venv
 # cd .venv/Scripts
 # activate.bat
 # py -m ensurepip --upgrade
@@ -646,7 +646,7 @@ def equipos_integrantes_view():
     return render_template("equiposintegrantes.html")
 
 
-@app.route("/tbodyEquiposIntegrantes")
+@app.route("/tbodyequiposintegrantes")
 def tbody_equipos_integrantes():
     if not con.is_connected():
         con.reconnect()
@@ -670,7 +670,7 @@ def tbody_equipos_integrantes():
     registros = cursor.fetchall()
     con.close()
 
-    return render_template("tbodyEquiposIntegrantes.html", equiposintegrantes=registros)
+    return render_template("tbodyequiposintegrantes.html", equiposintegrantes=registros)
 
 
 
@@ -842,6 +842,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
