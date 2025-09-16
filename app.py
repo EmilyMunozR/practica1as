@@ -1,4 +1,4 @@
-# python.exe -m venv .venv
+i# python.exe -m venv .venv
 # cd .venv/Scripts
 # activate.bat
 # py -m ensurepip --upgrade
@@ -639,7 +639,38 @@ def cargarEquipos():
     con.close()
     
     return make_response(jsonify(registros))
-#/////////////////////////////////////////////////////////
+#/////////////////////////////////////////////////////////equiposintegrante///////////////////////////////////////
+@app.route("/equiposintegrantes")
+def equipos_integrantes_view():
+    # Vista principal (renderiza el HTML que contiene la tabla y el contenedor del tbody)
+    return render_template("equiposintegrantes.html")
+
+
+@app.route("/tbodyEquiposIntegrantes")
+def tbody_equipos_integrantes():
+    if not con.is_connected():
+        con.reconnect()
+
+    cursor = con.cursor(dictionary=True)
+    sql = """
+    SELECT
+      ei.idEquipoIntegrante,
+      e.idEquipo,
+      ei.idIntegrante,
+      e.nombreEquipo,
+      i.nombreIntegrante,
+      ei.fechaUnion
+    FROM equiposintegrantes AS ei
+    LEFT JOIN equipos AS e ON ei.idEquipo = e.idEquipo
+    LEFT JOIN integrantes AS i ON ei.idIntegrante = i.idIntegrante
+    ORDER BY ei.fechaUnion DESC
+    LIMIT 50 OFFSET 0
+    """
+    cursor.execute(sql)
+    registros = cursor.fetchall()
+    con.close()
+
+    return render_template("tbodyEquiposIntegrantes.html", equiposintegrantes=registros)
 
 
 
@@ -811,6 +842,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
