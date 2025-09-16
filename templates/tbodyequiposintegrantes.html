@@ -2,9 +2,9 @@
 {% if equiposintegrantes%}
   {% for integranteequipo in equiposintegrantes %}
     <tr>
-      <td>{{ equipo.idEquipo }}</td>
-      <td>{{ integrante.idIntegrante }}</td>
-      <td>{{ equipo.nombreEquipo }}</td>
+      <td>{{ integranteequipo.idEquipo }}</td>
+      <td>{{ integranteequipo.idIntegrante }}</td>
+      <td>{{ integranteequipo.nombreEquipo }}</td>
       <td>
         <button class="btn btn-danger btn-end btnEliminarEquipo" data-id="{{ equipo.idEquipo }}">
           Eliminar
