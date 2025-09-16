@@ -293,7 +293,7 @@ app.controller("equiposintegrantesCtrl", function ($scope, $http) {
     });
 
     var channel = pusher.subscribe("equiposIntegranteschannel")
-    channel.bind("equiposevent", function(data) {
+    channel.bind("equiposIntegrantesevent", function(data) {
        buscarEquipos()
     })
 
@@ -415,6 +415,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
