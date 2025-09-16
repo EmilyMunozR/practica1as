@@ -641,13 +641,13 @@ def cargarEquipos():
     return make_response(jsonify(registros))
 #/////////////////////////////////////////////////////////equiposintegrante///////////////////////////////////////
 @app.route("/equiposintegrantes")
-def equipos_integrantes_view():
+def equiposintegrantes():
     # Vista principal (renderiza el HTML que contiene la tabla y el contenedor del tbody)
     return render_template("equiposintegrantes.html")
 
 
 @app.route("/tbodyequiposintegrantes")
-def tbody_equipos_integrantes():
+def tbodyequiposintegrantes():
     if not con.is_connected():
         con.reconnect()
 
@@ -842,6 +842,7 @@ def eliminarProducto():
     con.close()
 
     return make_response(jsonify({}))
+
 
 
 
