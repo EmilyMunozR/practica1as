@@ -2,6 +2,7 @@
 {% if equiposintegrantes%}
   {% for integranteequipo in equiposintegrantes %}
     <tr>
+      <td>{{ integranteequipo. idEquipoIntegrante  }}</td>
       <td>{{ integranteequipo.idEquipo }}</td>
       <td>{{ integranteequipo.idIntegrante }}</td>
       <td>{{ integranteequipo.nombreEquipo }}</td>
