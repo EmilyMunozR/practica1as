@@ -292,7 +292,7 @@ app.controller("equiposintegrantesCtrl", function ($scope, $http) {
       cluster: 'us2'
     });
 
-    var channel = pusher.subscribe("equiposchannel")
+    var channel = pusher.subscribe("equiposIntegranteschannel")
     channel.bind("equiposevent", function(data) {
        buscarEquipos()
     })
@@ -415,6 +415,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
 
 
