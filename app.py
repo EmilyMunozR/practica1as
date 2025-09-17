@@ -307,7 +307,26 @@ def proyectosavances():
 
     # Mandamos también los proyectos para el select
     return render_template("proyectosavances.html", proyectos=proyectos)
+@app.route("/proyectos/lista")
+def listaProyectos():
+    try:
+        if not con.is_connected():
+            con.reconnect()
 
+        cursor = con.cursor(dictionary=True)
+        sql = """
+        SELECT idProyecto, tituloProyecto
+        FROM proyectos
+        ORDER BY tituloProyecto ASC
+        """
+        cursor.execute(sql)
+        proyectos = cursor.fetchall()
+        con.close()
+        
+        return make_response(jsonify(proyectos))
+        
+    except Exception as e:
+        return make_response(jsonify({"error": str(e)}), 500)
 
 @app.route("/tbodyProyectosAvances")
 def tbodyProyectosAvances():
@@ -714,6 +733,7 @@ def eliminarProducto():
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
+
 
 
 
