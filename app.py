@@ -542,7 +542,7 @@ def tbodyequiposintegrantes():
     SELECT
     ei.idEquipoIntegrante,
     e.idEquipo,
-    ei.idIntegrante,
+    i.idIntegrante,
     e.nombreEquipo,
     i.nombreIntegrante,
     ei.fechaUnion
@@ -550,7 +550,7 @@ FROM equiposintegrantes AS ei
 INNER JOIN equipos AS e ON ei.idEquipo = e.idEquipo
 INNER JOIN integrantes AS i ON ei.idIntegrante = i.idIntegrante
 ORDER BY ei.fechaUnion DESC
-LIMIT 50 OFFSET 0;
+LIMIT 10 OFFSET 0;
 
      
     """
@@ -715,5 +715,6 @@ def eliminarProducto():
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
+
 
 
