@@ -1,22 +1,12 @@
-<form id="frmequipoIntegrante" method="post">
-    <div class="mb-1">
-        <label>Nombre del equipo o integrante</label>
-        <input type="text" class="form-control" id="txtNombreequipoIntegrante" name="txtNombreequipoIntegrante">
-    </div>
-    <div class="mb-1 text-end">
-        <button class="btn btn-primary">Guardar</button>
-    </div>
-</form>
-<div class="table-responsive">
-    <table class="table table-sm">
-        <thead class="table-active">
-            <tr>
-                <th>Id</th>
-                <th>Nombre equipo</th>
-                <th>Nombre Integrante</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody id="tbodyequiposintegrantes"></tbody>
-    </table>
-</div>
+{% for ei in equiposintegrantes %}
+<tr>
+  <td>{{ ei.idEquipoIntegrante }}</td>
+  <td>{{ ei.nombreEquipo }}</td>
+  <td>{{ ei.nombreIntegrante }}</td>
+  <td>
+    <button class="btn btn-danger btnEliminarIntegranteEquipo" data-id="{{ ei.idEquipoIntegrante }}">
+      Eliminar
+    </button>
+  </td>
+</tr>
+{% endfor %}
