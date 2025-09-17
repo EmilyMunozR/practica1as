@@ -540,17 +540,19 @@ def tbodyequiposintegrantes():
     cursor = con.cursor(dictionary=True)
     sql = """
     SELECT
-      ei.idEquipoIntegrante,
-      e.idEquipo,
-      ei.idIntegrante,
-      e.nombreEquipo,
-      i.nombreIntegrante,
-      ei.fechaUnion
-    FROM equiposintegrantes AS ei
-    LEFT JOIN equipos AS e ON ei.idEquipo = e.idEquipo
-    LEFT JOIN integrantes AS i ON ei.idIntegrante = i.idIntegrante
-    ORDER BY ei.fechaUnion DESC
-    LIMIT 50 OFFSET 0
+    ei.idEquipoIntegrante,
+    e.idEquipo,
+    ei.idIntegrante,
+    e.nombreEquipo,
+    i.nombreIntegrante,
+    ei.fechaUnion
+FROM equiposintegrantes AS ei
+INNER JOIN equipos AS e ON ei.idEquipo = e.idEquipo
+INNER JOIN integrantes AS i ON ei.idIntegrante = i.idIntegrante
+ORDER BY ei.fechaUnion DESC
+LIMIT 50 OFFSET 0;
+
+     
     """
     cursor.execute(sql)
     registros = cursor.fetchall()
