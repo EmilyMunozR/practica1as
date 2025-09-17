@@ -301,9 +301,10 @@ app.controller("equiposintegrantesCtrl", function ($scope, $http) {
     $(document).on("submit", "#frmequipoIntegrante", function (event) {
         event.preventDefault()
 
-        $.post("/integranteequipo ", {
+        $.post("/integranteequipo", {
             idEquipo: "",
-            nombreEquipo: $("#txtEquipoNombre").val(),
+            nombreEquipo: $("#txtNombreequipoIntegrante").val(),
+
         })
     })
 })
@@ -435,3 +436,4 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
