@@ -561,25 +561,6 @@ LIMIT 10 OFFSET 0;
     return render_template("tbodyequiposintegrantes.html", equiposintegrantes=registros)
 
 
-@app.route("/proyectosavances/proyectos/<int:id>")
-def productos2(id):
-    if not con.is_connected():
-        con.reconnect()
-
-    cursor = con.cursor(dictionary=True)
-    sql    = """
-    SELECT productos.Nombre_Producto, ingredientes.*, productos_ingredientes.Cantidad FROM productos_ingredientes
-    INNER JOIN productos ON productos.Id_Producto = productos_ingredientes.Id_Producto
-    INNER JOIN ingredientes ON ingredientes.Id_Ingrediente = productos_ingredientes.Id_Ingrediente
-    WHERE productos_ingredientes.Id_Producto = %s
-    ORDER BY productos.Nombre_Producto
-    """
-
-    cursor.execute(sql, (id, ))
-    registros = cursor.fetchall()
-
-    return render_template("modal.html", productosIngredientes=registros)
-
 @app.route("/productos/buscar", methods=["GET"])
 def buscarProductos():
     if not con.is_connected():
@@ -715,6 +696,7 @@ def eliminarProducto():
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
+
 
 
 
