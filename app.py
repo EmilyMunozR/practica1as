@@ -528,7 +528,6 @@ def cargarEquipos():
 #/////////////////////////////////////////////////////////equiposintegrante///////////////////////////////////////
 @app.route("/equiposintegrantes")
 def equiposintegrantes():
-    # Vista principal (renderiza el HTML que contiene la tabla y el contenedor del tbody)
     return render_template("equiposintegrantes.html")
 
 
@@ -696,6 +695,7 @@ def eliminarProducto():
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
+
 
 
 
