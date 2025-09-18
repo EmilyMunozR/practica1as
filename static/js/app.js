@@ -329,20 +329,18 @@ app.controller("equiposintegrantesCtrl", function ($scope, $http) {
 app.controller("proyectosavancesCtrl", function ($scope, $http) {
 
     // Cargar proyectos en el dropdown - ¡CORREGIDO!
+    // REEMPLAZAR en app.js:
     function cargarProyectos() {
-        // SOLUCIÓN: Usar la ruta que ya existe en app.py para cargar proyectos
-        $.get("/proyectosavances", function (data) {
-            // Esta ruta devuelve el HTML completo, necesitamos extraer los proyectos
-            // O crear una nueva ruta específica en app.py para la lista de proyectos
-            console.log("Necesitas crear una ruta /proyectos/lista en app.py");
-            
-            // SOLUCIÓN TEMPORAL: Si no puedes crear la ruta, usa este enfoque:
+        $.get("/proyectos/lista", function (proyectos) {
             const $selectProyecto = $("#slcProyecto");
             $selectProyecto.empty();
             $selectProyecto.append('<option value="">Seleccionar proyecto...</option>');
             
-            // Esto es un placeholder - necesitas implementar la ruta correcta
-            alert("Error: Necesitas crear la ruta /proyectos/lista en app.py");
+            proyectos.forEach(function(proyecto) {
+                $selectProyecto.append(`<option value="${proyecto.idProyecto}">${proyecto.tituloProyecto}</option>`);
+            });
+        }).fail(function() {
+            alert("Error al cargar proyectos");
         });
     }
 
@@ -364,44 +362,41 @@ app.controller("proyectosavancesCtrl", function ($scope, $http) {
         cluster: 'us2'
     });
 
-    var channel = pusher.subscribe("proyectosAvanceschannel");  // ← "Avances" con A mayúscula
-    channel.bind("proyectosAvancesevent", function(data) {      // ← "Avances" con A mayúscula
+        // CAMBIAR:
+    var channel = pusher.subscribe("proyectosAvanceschannel");  // ← Corregir aquí
+    channel.bind("proyectosAvancesevent", function(data) {      // ← Y aquí
         buscarProyectosAvances();
     });
 
     // Insertar Proyecto Avance - ¡MEJORADO!
-    $(document).on("submit", "#frmProyectoAvance", function (event) {
-        event.preventDefault();
+   // REEMPLAZAR en app.js:
+$(document).on("submit", "#frmProyectoAvance", function (event) {
+    event.preventDefault();
 
-        // Validaciones básicas
-        const idProyecto = $("#slcProyecto").val();
-        const progreso = $("#txtProgreso").val();
-        
-        if (!idProyecto) {
-            alert("Por favor selecciona un proyecto");
-            return;
-        }
-        if (!progreso) {
-            alert("Por favor ingresa el progreso");
-            return;
-        }
+    const idProyecto = $("#slcProyecto").val();
+    const progreso = $("#txtProgreso").val();
+    const descripcion = $("#txtDescripcion").val();
+    
+    if (!idProyecto) {
+        alert("Por favor selecciona un proyecto");
+        return;
+    }
+    if (!progreso) {
+        alert("Por favor ingresa el progreso");
+        return;
+    }
 
-        $.post("/proyectoavance", {
-            idProyectoAvance: "",
-            idProyecto: idProyecto,
-            progreso: progreso,
-            descripcion: $("#txtDescripcion").val(),
-        }).done(function(response) {
-            if (response.error) {
-                alert("Error: " + response.error);
-            } else {
-                $("#frmProyectoAvance")[0].reset();
-                alert("Avance guardado correctamente");
-                buscarProyectosAvances(); // Recargar la tabla
-            }
-        }).fail(function(xhr) {
-            alert("Error al guardar el avance: " + xhr.responseText);
-        });
+    $.post("/proyectoavance", {
+        idProyectoAvance: "",
+        idProyecto: idProyecto,
+        txtProgreso: progreso,  // ← Cambio importante aquí
+        txtDescripcion: descripcion
+    }).done(function(response) {
+        $("#frmProyectoAvance")[0].reset();
+        alert("Avance guardado correctamente");
+        buscarProyectosAvances();
+    }).fail(function(xhr) {
+        alert("Error al guardar: " + xhr.responseText);
     });
 });
 
@@ -436,4 +431,5 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash)
 })
+
 
