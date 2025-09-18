@@ -268,26 +268,6 @@ def eliminarIntegrante():
     pusherIntegrantes()
     return make_response(jsonify({"mensaje": "Integrante eliminado"}))
 
-@app.route("/proyectos/lista")
-def listaProyectos():
-    try:
-        if not con.is_connected():
-            con.reconnect()
-
-        cursor = con.cursor(dictionary=True)
-        sql = """
-        SELECT idProyecto, tituloProyecto
-        FROM proyectos
-        ORDER BY tituloProyecto ASC
-        """
-        cursor.execute(sql)
-        proyectos = cursor.fetchall()
-        con.close()
-        
-        return make_response(jsonify(proyectos))
-        
-    except Exception as e:
-        return make_response(jsonify({"error": str(e)}), 500)
 #   Rutas  De  Proyectos Avances    
 @app.route("/proyectosavances")
 def proyectosavances():
@@ -733,6 +713,7 @@ def eliminarProducto():
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
+
 
 
 
