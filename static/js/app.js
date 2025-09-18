@@ -1,341 +1,346 @@
+// app.js (corregido)
+
 function activeMenuOption(href) {
     $(".app-menu .nav-link")
-    .removeClass("active")
-    .removeAttr('aria-current')
+        .removeClass("active")
+        .removeAttr("aria-current");
 
     $(`[href="${(href ? href : "#/")}"]`)
-    .addClass("active")
-    .attr("aria-current", "page")
+        .addClass("active")
+        .attr("aria-current", "page");
 }
 
-const app = angular.module("angularjsApp", ["ngRoute"])
+const app = angular.module("angularjsApp", ["ngRoute"]);
+
 app.config(function ($routeProvider, $locationProvider) {
-    $locationProvider.hashPrefix("")
+    $locationProvider.hashPrefix("");
 
     $routeProvider
-    .when("/", {
-        templateUrl: "/app",
-        controller: "appCtrl"
-    })
-    .when("/integrantes", {
-        templateUrl: "/integrantes",
-        controller: "integrantesCtrl"
-    })
+        .when("/", {
+            templateUrl: "/app",
+            controller: "appCtrl"
+        })
+        .when("/integrantes", {
+            templateUrl: "/integrantes",
+            controller: "integrantesCtrl"
+        })
+        .when("/equiposintegrantes", {
+            templateUrl: "/equiposintegrantes",
+            controller: "equiposintegrantesCtrl"
+        })
+        .when("/equipos", {
+            templateUrl: "/equipos",
+            controller: "equiposCtrl"
+        })
+        .when("/proyectos", {
+            templateUrl: "/proyectos",
+            controller: "proyectosCtrl"
+        })
+        .when("/proyectosavances", {
+            templateUrl: "/proyectosavances",
+            controller: "proyectosavancesCtrl"
+        })
+        .otherwise({
+            redirectTo: "/"
+        });
+});
 
-
-
-        
-    .when("/equiposintegrantes", {
-        templateUrl: "/equiposintegrantes",
-        controller: "equiposintegrantesCtrl"
-    })
-    .when("/equipos", {
-        templateUrl: "/equipos",
-        controller: "equiposCtrl"
-    })
-    .when("/proyectos", {
-        templateUrl: "/proyectos",
-        controller: "proyectosCtrl"
-    })
-    .when("/proyectosavances", {
-        templateUrl: "/proyectosavances",
-        controller: "proyectosavancesCtrl"
-    })
-    .otherwise({
-        redirectTo: "/"
-    })
-})
 app.run(["$rootScope", "$location", "$timeout", function($rootScope, $location, $timeout) {
     function actualizarFechaHora() {
-        lxFechaHora = DateTime
-        .now()
-        .setLocale("es")
-
-        $rootScope.angularjsHora = lxFechaHora.toFormat("hh:mm:ss a")
-        $timeout(actualizarFechaHora, 1000)
+        // DateTime debe existir (luxon). lxFechaHora es global en este scope.
+        lxFechaHora = DateTime.now().setLocale("es");
+        $rootScope.angularjsHora = lxFechaHora.toFormat("hh:mm:ss a");
+        $timeout(actualizarFechaHora, 1000);
     }
 
-    $rootScope.slide = ""
+    $rootScope.slide = "";
 
-    actualizarFechaHora()
+    actualizarFechaHora();
 
     $rootScope.$on("$routeChangeSuccess", function (event, current, previous) {
-        $("html").css("overflow-x", "hidden")
-        
-        const path = current.$$route.originalPath
+        $("html").css("overflow-x", "hidden");
 
-        if (path.indexOf("splash") == -1) {
-            const active = $(".app-menu .nav-link.active").parent().index()
-            const click  = $(`[href^="#${path}"]`).parent().index()
+        const path = current && current.$$route ? current.$$route.originalPath : "/";
 
-            if (active != click) {
-                $rootScope.slide  = "animate__animated animate__faster animate__slideIn"
-                $rootScope.slide += ((active > click) ? "Left" : "Right")
+        if (path.indexOf("splash") === -1) {
+            const active = $(".app-menu .nav-link.active").parent().index();
+            const click  = $(`[href^="#${path}"]`).parent().index();
+
+            if (active !== click) {
+                $rootScope.slide = "animate__animated animate__faster animate__slideIn";
+                $rootScope.slide += ((active > click) ? "Left" : "Right");
             }
 
             $timeout(function () {
-                $("html").css("overflow-x", "auto")
+                $("html").css("overflow-x", "auto");
+                $rootScope.slide = "";
+            }, 1000);
 
-                $rootScope.slide = ""
-            }, 1000)
-
-            activeMenuOption(`#${path}`)
+            activeMenuOption(`#${path}`);
         }
-    })
-}])
-
+    });
+}]);
 
 ///////////////// App Controller
 app.controller("appCtrl", function ($scope, $http) {
     $("#frmInicioSesion").submit(function (event) {
-        event.preventDefault()
+        event.preventDefault();
+
         $.post("iniciarSesion", $(this).serialize(), function (respuesta) {
-            if (respuesta.length) {
-                window.location = "/#/integrantes"
-                
-                return
+            if (respuesta && respuesta.length) {
+                window.location = "/#/integrantes";
+                return;
             }
 
-             alert("Usuario y/o Contraseña Incorrecto(s)")
-        })
-    })
-})
-
+            alert("Usuario y/o Contraseña Incorrecto(s)");
+        }).fail(function () {
+            alert("Error al iniciar sesión");
+        });
+    });
+});
 
 ///////////////// integrantes controller
-
-///// Buscar Integrantes
 app.controller("integrantesCtrl", function ($scope, $http) {
     function buscarIntegrantes() {
         $.get("/tbodyIntegrantes", function (trsHTML) {
-            $("#tbodyIntegrantes").html(trsHTML)
-        })
+            $("#tbodyIntegrantes").html(trsHTML);
+        }).fail(function () {
+            console.log("Error al cargar integrantes");
+        });
     }
-    buscarIntegrantes()
-    
-    Pusher.logToConsole = true
+
+    buscarIntegrantes();
+
+    Pusher.logToConsole = true;
 
     var pusher = new Pusher('85576a197a0fb5c211de', {
-      cluster: 'us2'
+        cluster: 'us2'
     });
 
-    var channel = pusher.subscribe("integranteschannel")
+    var channel = pusher.subscribe("integranteschannel");
     channel.bind("integrantesevent", function(data) {
-       buscarIntegrantes()
-    })
+        buscarIntegrantes();
+    });
 
-
-///// Insertar Integrantes
+    // Insertar Integrantes
     $(document).on("submit", "#frmIntegrante", function (event) {
-        event.preventDefault()
+        event.preventDefault();
 
         $.post("/integrante", {
             idIntegrante: "",
-            nombreIntegrante: $("#txtNombreIntegrante").val(),
-        })
-    })
-})
-
-///// Eliminar Integrantes
- $(document).on("click", ".btnEliminarIntegrante", function () {
-        const id = $(this).data("id")
-
-        if (confirm("¿Seguro que quieres eliminar este integrante?")) {
-        $.post("/integrante/eliminar", { id: id }, function () {
-            // Elimina la fila del DOM
-            $(`button[data-id='${id}']`).closest("tr").remove()
+            nombreIntegrante: $("#txtNombreIntegrante").val()
+        }).done(function () {
+            // Si necesitas recargar tabla:
+            buscarIntegrantes();
         }).fail(function () {
-            alert("Error al eliminar el integrante")
-        })
+            alert("Error al guardar integrante");
+        });
+    });
+});
+
+// Eliminar Integrantes (fuera del controller por delegación)
+$(document).on("click", ".btnEliminarIntegrante", function () {
+    const id = $(this).data("id");
+
+    if (confirm("¿Seguro que quieres eliminar este integrante?")) {
+        $.post("/integrante/eliminar", { id: id }, function () {
+            $(`button[data-id='${id}']`).closest("tr").remove();
+        }).fail(function () {
+            alert("Error al eliminar el integrante");
+        });
     }
-})
+});
 
-
-///////////////// proyectos controller//////////////////////////////////////////////
+///////////////// proyectos controller
 app.controller("proyectosCtrl", function ($scope, $http) {
-    
+
     // Función para cargar equipos en el dropdown
     function cargarEquipos() {
         $.get("/equipos/lista", function (equipos) {
             const $selectEquipo = $("#txtEquipo");
             $selectEquipo.empty();
             $selectEquipo.append('<option value="">Seleccionar equipo...</option>');
-            
+
             equipos.forEach(function(equipo) {
                 $selectEquipo.append(`<option value="${equipo.idEquipo}">${equipo.nombreEquipo}</option>`);
             });
+        }).fail(function () {
+            alert("Error al cargar equipos");
         });
     }
-    
+
     function buscarProyectos() {
         $.get("/tbodyProyectos", function (trsHTML) {
-            $("#tbodyProyectos").html(trsHTML)
-        })
+            $("#tbodyProyectos").html(trsHTML);
+        }).fail(function () {
+            console.log("Error al cargar proyectos");
+        });
     }
 
     // Cargar equipos al inicializar la página
     cargarEquipos();
     buscarProyectos();
-    
+
     Pusher.logToConsole = true;
 
     var pusher = new Pusher('85576a197a0fb5c211de', {
-      cluster: 'us2'
+        cluster: 'us2'
     });
 
     var channel = pusher.subscribe("proyectoschannel");
     channel.bind("proyectosevent", function(data) {
-       buscarProyectos();
+        buscarProyectos();
     });
 
     $(document).on("submit", "#frmProyectos", function (event) {
         event.preventDefault();
-    
+
         $.post("/proyectos", {
             idProyecto: "",
             tituloProyecto: $("#txtNombreProyecto").val(),
             idEquipo: $("#txtEquipo").val(),
             objetivo: $("#txtObjetivo").val(),
-            estado: $("#txtEstado").val(),
+            estado: $("#txtEstado").val()
         }).done(function(response) {
             // Limpiar formulario
             $("#frmProyectos")[0].reset();
-            
+
             // Recargar dropdown de equipos
             cargarEquipos();
-            
+
             alert("Proyecto guardado exitosamente");
+            buscarProyectos();
         }).fail(function(xhr, status, error) {
             console.log("Error:", error);
             alert("Error al guardar el proyecto");
         });
     });
-    // Agregar este código después del controlador proyectosCtrl en app.js
 
-    ///// Eliminar Proyectos
+    // Eliminar Proyectos
     $(document).on("click", ".btnEliminarProyecto", function () {
-        const id = $(this).data("id")
+        const id = $(this).data("id");
 
         if (confirm("¿Seguro que quieres eliminar este proyecto?")) {
             $.post("/proyectos/eliminar", { id: id }, function () {
-                // Elimina la fila del DOM
-                $(`button[data-id='${id}']`).closest("tr").remove()
+                $(`button[data-id='${id}']`).closest("tr").remove();
             }).fail(function () {
-                alert("Error al eliminar el proyecto")
-            })
+                alert("Error al eliminar el proyecto");
+            });
         }
-    })
+    });
 });
-//////////////Equipos Controllers///////////////////////////
 
+////////////////// Equipos Controllers
 app.controller("equiposCtrl", function ($scope, $http) {
     function buscarEquipos() {
         $.get("/tbodyEquipos", function (trsHTML) {
-            $("#tbodyEquipos").html(trsHTML)
-        })
+            $("#tbodyEquipos").html(trsHTML);
+        }).fail(function () {
+            console.log("Error al cargar equipos");
+        });
     }
 
-    buscarEquipos()
-    
-    Pusher.logToConsole = true
+    buscarEquipos();
+
+    Pusher.logToConsole = true;
 
     var pusher = new Pusher('85576a197a0fb5c211de', {
-      cluster: 'us2'
+        cluster: 'us2'
     });
 
-    var channel = pusher.subscribe("equiposchannel")
+    var channel = pusher.subscribe("equiposchannel");
     channel.bind("equiposevent", function(data) {
-       buscarEquipos()
-    })
-
+        buscarEquipos();
+    });
 
     $(document).on("submit", "#frmEquipo", function (event) {
-        event.preventDefault()
+        event.preventDefault();
 
         $.post("/equipo", {
             idEquipo: "",
-            nombreEquipo: $("#txtEquipoNombre").val(),
-        })
-    })
-})
-
-
- $(document).on("click", ".btnEliminarEquipo", function () {
-        const id = $(this).data("id")
-
-        if (confirm("¿Seguro que quieres eliminar este Equipo?")) {
-        $.post("/equipo/eliminar", { id: id }, function () {
-            // Elimina la fila del DOM
-            $(`button[data-id='${id}']`).closest("tr").remove()
+            nombreEquipo: $("#txtEquipoNombre").val()
+        }).done(function () {
+            buscarEquipos();
         }).fail(function () {
-            alert("Error al eliminar el Team")
-        })
+            alert("Error al guardar equipo");
+        });
+    });
+});
+
+// Eliminar Equipo
+$(document).on("click", ".btnEliminarEquipo", function () {
+    const id = $(this).data("id");
+
+    if (confirm("¿Seguro que quieres eliminar este Equipo?")) {
+        $.post("/equipo/eliminar", { id: id }, function () {
+            $(`button[data-id='${id}']`).closest("tr").remove();
+        }).fail(function () {
+            alert("Error al eliminar el Team");
+        });
     }
-})
+});
 
-
-///////////////////////////////////equiposIntegrantes////////////////////////////////////////////////////////////////////////////
-
-
+/////////////////////////////////// equiposIntegrantes
 app.controller("equiposintegrantesCtrl", function ($scope, $http) {
-    function buscarEquipos() {
+    function buscarEquiposIntegrantes() {
         $.get("/tbodyequiposintegrantes", function (trsHTML) {
-            $("#tbodyequiposintegrantes").html(trsHTML)
-        })
+            $("#tbodyequiposintegrantes").html(trsHTML);
+        }).fail(function () {
+            console.log("Error al cargar equipos-integrantes");
+        });
     }
 
-    buscarEquipos()
-    
-    Pusher.logToConsole = true
+    buscarEquiposIntegrantes();
+
+    Pusher.logToConsole = true;
 
     var pusher = new Pusher('85576a197a0fb5c211de', {
-      cluster: 'us2'
+        cluster: 'us2'
     });
 
-    var channel = pusher.subscribe("equiposIntegranteschannel")
+    var channel = pusher.subscribe("equiposIntegranteschannel");
     channel.bind("equiposIntegrantesevent", function(data) {
-       buscarEquipos()
-    })
-
+        buscarEquiposIntegrantes();
+    });
 
     $(document).on("submit", "#frmequipoIntegrante", function (event) {
-        event.preventDefault()
+        event.preventDefault();
 
         $.post("/integranteequipo", {
             idEquipo: "",
-            nombreEquipo: $("#txtNombreequipoIntegrante").val(),
-
-        })
-    })
-})
-
-
- $(document).on("click", ".btnEliminarIntegranteEquipo", function () {
-        const id = $(this).data("id")
-
-        if (confirm("¿Seguro que quieres eliminar este Equipo?")) {
-        $.post("/equipo/eliminar", { id: id }, function () {
-            // Elimina la fila del DOM
-            $(`button[data-id='${id}']`).closest("tr").remove()
+            nombreEquipo: $("#txtNombreequipoIntegrante").val()
+        }).done(function () {
+            buscarEquiposIntegrantes();
         }).fail(function () {
-            alert("Error al eliminar el Team")
-        })
+            alert("Error al guardar integrante-equipo");
+        });
+    });
+});
+
+// Eliminar integrante-equipo
+$(document).on("click", ".btnEliminarIntegranteEquipo", function () {
+    const id = $(this).data("id");
+
+    if (confirm("¿Seguro que quieres eliminar este Equipo?")) {
+        $.post("/equipo/eliminar", { id: id }, function () {
+            $(`button[data-id='${id}']`).closest("tr").remove();
+        }).fail(function () {
+            alert("Error al eliminar el Team");
+        });
     }
-})
+});
 
-////////////////////////////////////////////////////////////
-///////////////// proyectosavances controller - ¡CORREGIDO!
-
+//////////////////////////////////////////////////////////
+// proyectosavances controller (CORREGIDO)
 app.controller("proyectosavancesCtrl", function ($scope, $http) {
 
-    // Cargar proyectos en el dropdown - ¡CORREGIDO!
-    // REEMPLAZAR en app.js:
+    // Cargar proyectos en el dropdown
     function cargarProyectos() {
         $.get("/proyectos/lista", function (proyectos) {
             const $selectProyecto = $("#slcProyecto");
             $selectProyecto.empty();
             $selectProyecto.append('<option value="">Seleccionar proyecto...</option>');
-            
+
             proyectos.forEach(function(proyecto) {
                 $selectProyecto.append(`<option value="${proyecto.idProyecto}">${proyecto.tituloProyecto}</option>`);
             });
@@ -348,6 +353,8 @@ app.controller("proyectosavancesCtrl", function ($scope, $http) {
     function buscarProyectosAvances() {
         $.get("/tbodyProyectosAvances", function (trsHTML) {
             $("#tbodyProyectosAvances").html(trsHTML);
+        }).fail(function () {
+            console.log("Error al cargar avances");
         });
     }
 
@@ -355,81 +362,78 @@ app.controller("proyectosavancesCtrl", function ($scope, $http) {
     cargarProyectos();
     buscarProyectosAvances();
 
-    // Pusher - ¡CORREGIDO!
+    // Pusher
     Pusher.logToConsole = true;
 
     var pusher = new Pusher('85576a197a0fb5c211de', {
         cluster: 'us2'
     });
 
-        // CAMBIAR:
-    var channel = pusher.subscribe("proyectosAvanceschannel");  // ← Corregir aquí
-    channel.bind("proyectosAvancesevent", function(data) {      // ← Y aquí
+    var channel = pusher.subscribe("proyectosAvanceschannel");
+    channel.bind("proyectosAvancesevent", function(data) {
         buscarProyectosAvances();
     });
 
-    // Insertar Proyecto Avance - ¡MEJORADO!
-   // REEMPLAZAR en app.js:
-$(document).on("submit", "#frmProyectoAvance", function (event) {
-    event.preventDefault();
+    // Insertar Proyecto Avance
+    $(document).on("submit", "#frmProyectoAvance", function (event) {
+        event.preventDefault();
 
-    const idProyecto = $("#slcProyecto").val();
-    const progreso = $("#txtProgreso").val();
-    const descripcion = $("#txtDescripcion").val();
-    
-    if (!idProyecto) {
-        alert("Por favor selecciona un proyecto");
-        return;
-    }
-    if (!progreso) {
-        alert("Por favor ingresa el progreso");
-        return;
-    }
+        const idProyecto = $("#slcProyecto").val();
+        const progreso = $("#txtProgreso").val();
+        const descripcion = $("#txtDescripcion").val();
 
-    $.post("/proyectoavance", {
-        idProyectoAvance: "",
-        idProyecto: idProyecto,
-        txtProgreso: progreso,  // ← Cambio importante aquí
-        txtDescripcion: descripcion
-    }).done(function(response) {
-        $("#frmProyectoAvance")[0].reset();
-        alert("Avance guardado correctamente");
-        buscarProyectosAvances();
-    }).fail(function(xhr) {
-        alert("Error al guardar: " + xhr.responseText);
-    });
-});
+        if (!idProyecto) {
+            alert("Por favor selecciona un proyecto");
+            return;
+        }
+        if (!progreso) {
+            alert("Por favor ingresa el progreso");
+            return;
+        }
 
-// Eliminar Proyecto Avance
-$(document).on("click", ".btnEliminarAvance", function () {
-    const id = $(this).data("id");
-
-    if (confirm("¿Seguro que quieres eliminar este avance?")) {
-        $.post("/proyectoavance/eliminar", { id: id }, function () {
-            $(`button[data-id='${id}']`).closest("tr").remove();
-        }).fail(function () {
-            alert("Error al eliminar el avance");
+        $.post("/proyectoavance", {
+            idProyectoAvance: "",
+            idProyecto: idProyecto,
+            txtProgreso: progreso,
+            txtDescripcion: descripcion
+        }).done(function(response) {
+            $("#frmProyectoAvance")[0].reset();
+            alert("Avance guardado correctamente");
+            buscarProyectosAvances();
+        }).fail(function(xhr) {
+            alert("Error al guardar: " + (xhr.responseText || xhr.statusText));
         });
-    }
+    });
+
+    // Eliminar Proyecto Avance
+    $(document).on("click", ".btnEliminarAvance", function () {
+        const id = $(this).data("id");
+
+        if (confirm("¿Seguro que quieres eliminar este avance?")) {
+            $.post("/proyectoavance/eliminar", { id: id }, function () {
+                $(`button[data-id='${id}']`).closest("tr").remove();
+            }).fail(function () {
+                alert("Error al eliminar el avance");
+            });
+        }
+    });
 });
 
-///////////////////////////////////////////////////////////
-const DateTime = luxon.DateTime
-let lxFechaHora
+/////////////////////////////////////////////////////////
+
+// Luxon DateTime y variable de fecha/hora
+const DateTime = luxon.DateTime;
+let lxFechaHora = null;
 
 document.addEventListener("DOMContentLoaded", function (event) {
     const configFechaHora = {
         locale: "es",
         weekNumbers: true,
-        // enableTime: true,
         minuteIncrement: 15,
         altInput: true,
         altFormat: "d/F/Y",
-        dateFormat: "Y-m-d",
-        // time_24hr: false
-    }
+        dateFormat: "Y-m-d"
+    };
 
-    activeMenuOption(location.hash)
-})
-
-
+    activeMenuOption(location.hash);
+});
