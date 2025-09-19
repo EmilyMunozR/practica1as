@@ -281,35 +281,81 @@ $(document).on("click", ".btnEliminarEquipo", function () {
 });
 
 /////////////////////////////////// equiposIntegrantes
+
 app.controller("equiposintegrantesCtrl", function ($scope, $http) {
+    // Cargar equipos en el select
+    function cargarEquipos() {
+        $.get("/equipos/lista", function (equipos) {
+            const $selectEquipo = $("#txtEquipo");
+            $selectEquipo.empty();
+            $selectEquipo.append('<option value="">Seleccionar equipo...</option>');
+            equipos.forEach(function (equipo) {
+                $selectEquipo.append(`<option value="${equipo.idEquipo}">${equipo.nombreEquipo}</option>`);
+            });
+        }).fail(function () {
+            alert("Error al cargar equipos");
+        });
+    }
+
+    // Cargar integrantes en el select
+    function cargarIntegrantes() {
+        $.get("/integrantes/lista", function (integrantes) {
+            const $selectIntegrante = $("#txtIntegrante");
+            $selectIntegrante.empty();
+            $selectIntegrante.append('<option value="">Seleccionar integrante...</option>');
+            integrantes.forEach(function (integrante) {
+                $selectIntegrante.append(`<option value="${integrante.idIntegrante}">${integrante.nombreIntegrante}</option>`);
+            });
+        }).fail(function () {
+            alert("Error al cargar integrantes");
+        });
+    }
+
+    // Buscar equipos-integrantes
     function buscarEquiposIntegrantes() {
-        $.get("/tbodyequiposintegrantes", function (trsHTML) {
-            $("#tbodyequiposintegrantes").html(trsHTML);
+        $.get("/tbodyEquiposIntegrantes", function (trsHTML) {
+            $("#tbodyEquiposIntegrantes").html(trsHTML);
         }).fail(function () {
             console.log("Error al cargar equipos-integrantes");
         });
     }
 
+    // Inicializar
+    cargarEquipos();
+    cargarIntegrantes();
     buscarEquiposIntegrantes();
 
+    // Pusher
     Pusher.logToConsole = true;
-
-    var pusher = new Pusher('85576a197a0fb5c211de', {
-        cluster: 'us2'
-    });
-
+    var pusher = new Pusher('85576a197a0fb5c211de', { cluster: 'us2' });
     var channel = pusher.subscribe("equiposIntegranteschannel");
-    channel.bind("equiposIntegrantesevent", function(data) {
+    channel.bind("equiposIntegrantesevent", function (data) {
         buscarEquiposIntegrantes();
     });
 
-    $(document).on("submit", "#frmequipoIntegrante", function (event) {
+    // Insertar Equipo-Integrante (ojo: id correcto del form)
+    $(document).on("submit", "#frmEquipoIntegrante", function (event) {
         event.preventDefault();
 
-        $.post("/integranteequipo", {
-            idEquipo: "",
-            nombreEquipo: $("#txtNombreequipoIntegrante").val()
+        const idEquipo = $("#txtEquipo").val();
+        const idIntegrante = $("#txtIntegrante").val();
+
+        if (!idEquipo) {
+            alert("Por favor selecciona un equipo");
+            return;
+        }
+        if (!idIntegrante) {
+            alert("Por favor selecciona un integrante");
+            return;
+        }
+
+        $.post("/equiposintegrantes", {
+            idEquipoIntegrante: "",
+            idEquipo: idEquipo,
+            idIntegrante: idIntegrante
         }).done(function () {
+            $("#frmEquipoIntegrante")[0].reset();
+            alert("Integrante asignado al equipo correctamente");
             buscarEquiposIntegrantes();
         }).fail(function () {
             alert("Error al guardar integrante-equipo");
@@ -318,14 +364,14 @@ app.controller("equiposintegrantesCtrl", function ($scope, $http) {
 });
 
 // Eliminar integrante-equipo
-$(document).on("click", ".btnEliminarIntegranteEquipo", function () {
+$(document).on("click", ".btnEliminarEquipoIntegrante", function () {
     const id = $(this).data("id");
 
-    if (confirm("¿Seguro que quieres eliminar este Equipo?")) {
-        $.post("/equipo/eliminar", { id: id }, function () {
+    if (confirm("¿Seguro que quieres eliminar este registro?")) {
+        $.post("/equiposintegrantes/eliminar", { id: id }, function () {
             $(`button[data-id='${id}']`).closest("tr").remove();
         }).fail(function () {
-            alert("Error al eliminar el Team");
+            alert("Error al eliminar el registro");
         });
     }
 });
@@ -437,3 +483,4 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash);
 });
+
