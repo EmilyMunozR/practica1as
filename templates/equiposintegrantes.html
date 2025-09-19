@@ -1,10 +1,24 @@
-<form id="frmIntegrante" method="post">
-    <div class="mb-1">
-        <label>Nombre del equipo e integrantes</label>
-        <input type="text" class="form-control" id="txtNombreIntegrante" name="txtNombreIntegrante">
-    </div>
-    <div class="mb-1 text-end">
-        <button class="btn btn-primary">Guardar</button>
+<form id="frmEquipoIntegrante" method="post">
+    <div class="parent">
+        <div class="div1">
+            <div class="mb-1">
+                <label>Equipo</label>
+                <select class="form-control" id="txtEquipo" name="txtEquipo">
+                    <option value="">Seleccionar equipo...</option>
+                    <!-- Los equipos se cargarán dinámicamente aquí -->
+                </select>
+            </div>
+            <div class="mb-1">
+                <label>Integrante</label>
+                <select class="form-control" id="txtIntegrante" name="txtIntegrante">
+                    <option value="">Seleccionar integrante...</option>
+                    <!-- Los integrantes se cargarán dinámicamente aquí -->
+                </select>
+            </div>
+            <div class="mb-1 text-end">
+                <button class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
     </div>
 </form>
 <div class="table-responsive">
@@ -14,9 +28,10 @@
                 <th>Id</th>
                 <th>Nombre equipo</th>
                 <th>Nombre Integrante</th>
+                <th>Fecha Union</th>
                 <th></th>
             </tr>
         </thead>
-        <tbody id="tbodyequiposintegrantes"></tbody>
+        <tbody id="tbodyEquiposIntegrantes"></tbody>
     </table>
 </div>
