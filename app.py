@@ -275,7 +275,7 @@ def proyectosavances():
         con.reconnect()
 
     cursor = con.cursor(dictionary=True)
-    # Traer proyectos para el select
+    # Funcion para inner join demiselctt
     sql = """
     SELECT idProyecto, tituloProyecto
     FROM proyectos
@@ -285,7 +285,7 @@ def proyectosavances():
     proyectos = cursor.fetchall()
     con.close()
 
-    # Mandamos también los proyectos para el select
+    # funcion para mandarlos a la funcion lista deljsjsjs
     return render_template("proyectosavances.html", proyectos=proyectos)
 @app.route("/proyectos/lista")
 def listaProyectos():
@@ -697,6 +697,7 @@ def cargarIntegrantes():
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
+
 
 
 
