@@ -130,7 +130,6 @@ app.controller("integrantesCtrl", function ($scope, $http) {
             idIntegrante: "",
             nombreIntegrante: $("#txtNombreIntegrante").val()
         }).done(function () {
-            // Si necesitas recargar tabla:
             buscarIntegrantes();
         }).fail(function () {
             alert("Error al guardar integrante");
@@ -509,4 +508,5 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash);
 });
+
 
