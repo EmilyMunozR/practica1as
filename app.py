@@ -338,7 +338,7 @@ def guardarProyectoAvance():
         con.reconnect()
 
     idProyectoAvance = request.form.get("idProyectoAvance")
-    idProyecto       = request.form.get("idProyecto")   # 👈 debe coincidir con el name del select
+    idProyecto       = request.form.get("idProyecto")  
     progreso         = request.form.get("txtProgreso")
     descripcion      = request.form.get("txtDescripcion")
 
@@ -697,6 +697,7 @@ def cargarIntegrantes():
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
+
 
 
 
