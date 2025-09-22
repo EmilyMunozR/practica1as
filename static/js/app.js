@@ -192,9 +192,35 @@ app.controller("proyectosCtrl", function ($scope, $http) {
         buscarProyectos();
     });
 
-    $(document).on("submit", "#frmProyectos", function (event) {
+    $(document).off("submit", "#frmProyectos").on("submit", "#frmProyectos", function (event) {
         event.preventDefault();
 
+        const nombreProyecto = $("#txtNombreProyecto").val().trim();
+        const equipo = $("#txtEquipo").val();
+        const objetivo = $("#txtObjetivo").val().trim();
+        const estado = $("#txtEstado").val().trim();
+
+       if (!nombreProyecto) {
+            alert("Por favor ingresa el nombre del proyecto");
+            return;
+        }
+        
+        if (!equipo) {
+            alert("Por favor selecciona un equipo");
+            return;
+        }
+        
+        if (!objetivo) {
+            alert("Por favor ingresa el objetivo");
+            return;
+        }
+        
+        if (!estado) {
+            alert("Por favor ingresa el estado");
+            return;
+        }
+
+        
         $.post("/proyectos", {
             idProyecto: "",
             tituloProyecto: $("#txtNombreProyecto").val(),
