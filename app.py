@@ -508,7 +508,7 @@ def eliminarProyecto():
     if not con.is_connected():
         con.reconnect()
 
-    id = request.form["id"]
+    id = request.form.get("id")
 
     cursor = con.cursor(dictionary=True)
     sql    = """
@@ -517,12 +517,22 @@ def eliminarProyecto():
     """
     val    = (id,)
 
-    cursor.execute(sql, val)
-    con.commit()
-    con.close()
-
-    return make_response(jsonify({}))
-
+    try:
+        cursor.execute(sql, val)
+        con.commit()
+        
+        # CORRECCIÓN: Agregar la llamada a pusherProyectos()
+        pusherProyectos()
+        
+        return make_response(jsonify({"mensaje": "Proyecto eliminado correctamente"}))
+        
+    except mysql.connector.Error as error:
+        con.rollback()
+        print(f"Error al eliminar proyecto: {error}")
+        return make_response(jsonify({"error": "Error al eliminar proyecto"}), 500)
+        
+    finally:
+        con.close()
 
 
 #//////////////esta wea me trae una lista pal inerjoin //////////////////////////////////////////////////////////
