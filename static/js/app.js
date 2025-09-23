@@ -137,7 +137,7 @@ app.controller("integrantesCtrl", function ($scope, $http) {
     });
 });
 
-// Eliminar Integrantes (fuera del controller por delegación)
+// Eliminar Integrantes 
 $(document).on("click", ".btnEliminarIntegrante", function () {
     const id = $(this).data("id");
 
@@ -508,5 +508,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash);
 });
+
 
 
