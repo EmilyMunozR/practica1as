@@ -490,25 +490,29 @@ app.controller("proyectosavancesCtrl", function ($scope, $http) {
     });
 
         // ===============================
-    //  Modificar Proyecto Avance
-    // ===============================
-
-    let idAvanceEditar = null;
-    let idProyectoFijo = null; // ✅ guardaremos aquí el idProyecto original
-
-    // Click en "Modificar"
-    $(document).on("click", ".btnEditarAvance", function() {
-        idAvanceEditar = $(this).data("id");
-        idProyectoFijo = $(this).data("proyecto"); // ✅ tomamos el idProyecto desde la tabla
-
+        //  Modificar Proyecto Avance
+        // ===============================
+    
+        let idAvanceEditar = null;
+        let idProyectoFijo = null; // ✅ guardaremos aquí el idProyecto original
+    
+        // Click en "Modificar"
+        $(document).on("click", ".btnEditarAvance", function () {
+        const id = $(this).data("id");
+        const proyecto = $(this).data("proyecto"); // este es el idProyecto
         const progreso = $(this).data("progreso");
         const descripcion = $(this).data("descripcion");
-
+    
+        // Llenar formulario
         $("#txtProgreso").val(progreso);
         $("#txtDescripcion").val(descripcion);
-
-        // ✅ Deshabilitamos el select para que no pueda cambiarlo
+        $("#hiddenIdProyecto").val(proyecto); // ✅ guardar el id real del proyecto
+    
+        // Opcional: si no quieres cambiar el select
         $("#slcProyecto").prop("disabled", true);
+        $("#frmProyectoAvance").data("modo", "editar");
+        $("#frmProyectoAvance").data("idAvance", id);
+    });
 
         // Cambiamos el texto del botón principal
         $("#frmProyectoAvance button[type='submit']").text("Actualizar");
@@ -573,6 +577,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash);
 });
+
 
 
 
