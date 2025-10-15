@@ -316,6 +316,7 @@ def tbodyProyectosAvances():
     cursor = con.cursor(dictionary=True)
     sql = """
     SELECT pa.idProyectoAvance,
+           pa.idProyecto,   
            pa.progreso,
            pa.descripcion,
            pa.fechaHora,
@@ -697,6 +698,7 @@ def cargarIntegrantes():
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
+
 
 
 
