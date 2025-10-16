@@ -626,9 +626,9 @@ def guardarEquiposIntegrantes():
     if not con.is_connected():
         con.reconnect()
 
-    idEquipoIntegrante = request.form.get("idEquipoIntegrante")
-    idEquipo = request.form.get("idEquipo") or request.form.get("txtEquipo")
-    idIntegrante = request.form.get("idIntegrante") or request.form.get("txtIntegrante")
+    idEquipoIntegrante = request.form["idEquipoIntegrante"]
+    idEquipo = request.form["idEquipo"]
+    idIntegrante = request.form["idIntegrante"]
     
     cursor = con.cursor()
 
@@ -654,7 +654,6 @@ def guardarEquiposIntegrantes():
 
     pusherEquiposIntegrantes()
     return make_response(jsonify({"mensaje": "EquipoIntegrante guardado"}))
-
 
 @app.route("/equiposintegrantes/eliminar", methods=["POST"])
 def eliminarequiposintegrantes():
@@ -699,9 +698,6 @@ def cargarIntegrantes():
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
-
-
-
 
 
 
