@@ -359,39 +359,34 @@ app.controller("equiposintegrantesCtrl", function ($scope, $http) {
     });
 
     // Insertar Equipo-Integrante (ojo: id correcto del form)
-  // Insertar o Modificar Equipo-Integrante
-$(document).on("submit", "#frmEquipoIntegrante", function (event) {
-    event.preventDefault();
+    $(document).on("submit", "#frmEquipoIntegrante", function (event) {
+        event.preventDefault();
 
-    const idEquipoIntegrante = $("#idEquipoIntegrante").val();
-    const idEquipo = $("#txtEquipo").val();
-    const idIntegrante = $("#txtIntegrante").val();
+        const idEquipo = $("#txtEquipo").val();
+        const idIntegrante = $("#txtIntegrante").val();
 
-    if (!idEquipo) {
-        alert("Por favor selecciona un equipo");
-        return;
-    }
-    if (!idIntegrante) {
-        alert("Por favor selecciona un integrante");
-        return;
-    }
+        if (!idEquipo) {
+            alert("Por favor selecciona un equipo");
+            return;
+        }
+        if (!idIntegrante) {
+            alert("Por favor selecciona un integrante");
+            return;
+        }
 
-    $.post("/equiposintegrantes", {
-        idEquipoIntegrante: idEquipoIntegrante,  // <- aquí el cambio clave
-        idEquipo: idEquipo,
-        idIntegrante: idIntegrante
-    }).done(function () {
-        $("#frmEquipoIntegrante")[0].reset();
-        $("#btnGuardar").text("Guardar");
-        $("#idEquipoIntegrante").val(""); // limpia el ID
-        alert(idEquipoIntegrante ? "Integrante modificado correctamente" : "Integrante asignado al equipo correctamente");
-        buscarEquiposIntegrantes();
-    }).fail(function () {
-        alert("Error al guardar integrante-equipo");
+        $.post("/equiposintegrantes", {
+            idEquipoIntegrante: "",
+            idEquipo: idEquipo,
+            idIntegrante: idIntegrante
+        }).done(function () {
+            $("#frmEquipoIntegrante")[0].reset();
+            alert("Integrante asignado al equipo correctamente");
+            buscarEquiposIntegrantes();
+        }).fail(function () {
+            alert("Error al guardar integrante-equipo");
+        });
     });
 });
-
-  
 
 // Eliminar integrante-equipo
 $(document).on("click", ".btnEliminarEquipoIntegrante", function () {
@@ -591,8 +586,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash);
 });
-
-
 
 
 
