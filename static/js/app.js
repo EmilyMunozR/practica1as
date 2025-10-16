@@ -401,9 +401,6 @@ $(document).on("click", ".btnEliminarEquipoIntegrante", function () {
     }
 });
 
-
-
-
 //////////////////////////////////////////////////////////
 // proyectosavances controller (CORREGIDO)
 app.controller("proyectosavancesCtrl", function ($scope, $http) {
@@ -580,9 +577,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     activeMenuOption(location.hash);
 });
-
-
-
 
 
 
