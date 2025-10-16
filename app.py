@@ -693,51 +693,12 @@ def cargarIntegrantes():
     con.close()
     
     return make_response(jsonify(registros))
-
-
-@app.route("/equiposintegrantes", methods=["POST"])
-def guardarEquipoIntegrante():
-    try:
-        data = request.form
-        idEquipoIntegrante = data.get("idEquipoIntegrante")
-        idEquipo = data["txtEquipo"]
-        idIntegrante = data["txtIntegrante"]
-
-        con = con_pool.get_connection()
-        cursor = con.cursor()
-
-        if idEquipoIntegrante:  # 🔹 Si existe, actualiza
-            sql = """
-            UPDATE equiposintegrantes
-            SET idEquipo = %s, idIntegrante = %s
-            WHERE idEquipoIntegrante = %s
-            """
-            cursor.execute(sql, (idEquipo, idIntegrante, idEquipoIntegrante))
-        else:  # 🔹 Si no existe, inserta
-            sql = """
-            INSERT INTO equiposintegrantes (idEquipo, idIntegrante)
-            VALUES (%s, %s)
-            """
-            cursor.execute(sql, (idEquipo, idIntegrante))
-
-        con.commit()
-        return redirect(url_for("mostrarEquiposIntegrantes"))
-
-    except Exception as e:
-        print(f"Error al guardar/actualizar: {e}")
-        return jsonify({"error": "Error al guardar/actualizar"}), 500
-
-    finally:
-        if cursor:
-            cursor.close()
-        if con and con.is_connected():
-            con.close()
-
     
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
+
 
 
 
